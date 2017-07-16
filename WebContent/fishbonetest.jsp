@@ -158,9 +158,9 @@
             </ul>
         <div id="rMenu">
             <ul>
-                <li id="m_add" onclick="addTreeNode();">增加节点</li>
-                <li id="m_del" onclick="removeTreeNode();">删除节点</li>
-                <li id="m_check" onclick="updateNode()">编辑节点</li>
+                <li id="m_add" onclick="addTreeNode();">添加</li>
+                <li id="m_del" onclick="removeTreeNode();">删除</li>
+                <li id="m_check" onclick="updateNode()">编辑</li>
             </ul>
         </div>
     <script type="text/javascript" src="js/tree/jquery.ztree.core.js"></script>

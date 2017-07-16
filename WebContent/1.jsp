@@ -63,10 +63,13 @@ function node(x, y) {
     scene.add(testnode);
 }
 
+var storeArr = new Array();
 
 
-
-
+storeArr.push([tree1]);
+storeArr.push([tree2]);
+storeArr.push([tree3]);
+storeArr.push([tree4]);
 
 
 

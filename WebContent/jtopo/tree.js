@@ -168,7 +168,7 @@ function hideRMenu() {
 	    } else {
 	        zTree.addNodes(null, newNode);
 	    }
-	    renewAddCsv(zTree.getSelectedNodes()[0], newNode.name)
+	    renewAddCsv(zTree.getSelectedNodes()[0], newNode.name);
 	}
 	
 	function removeTreeNode() {
@@ -249,7 +249,7 @@ function hideRMenu() {
 			var length = excelData[i].split(",").length;
 			for(j=0; j<length; j++){
 				if(excelData[i].split(",")[j] === curNode.name){
-					excelData.splice(i, 1);
+					excelData.splice(i, curNode.children.length+1);
 					break;
 				}
 			}
@@ -282,11 +282,11 @@ function redraw(){
     		break;
     	}
     }
-    drawSecThirClaNode ("测量", measureNode);
-    drawSecThirClaNode ("环境", environmentNode);
-    drawSecThirClaNode ("方法", methodNode);
-    drawSecThirClaNode ("材料", materialNode);
-    drawSecThirClaNode ("机器", machineNode);
-    drawSecThirClaNode ("人员", manNode);
+    drawSecThirClaNode ("测量",  bigMeasure);
+    drawSecThirClaNode ("环境",  bigEnvironment);
+    drawSecThirClaNode ("方法",  bigMethod);
+    drawSecThirClaNode ("材料",  bigMaterial);
+    drawSecThirClaNode ("机器",  bigMachine);
+    drawSecThirClaNode ("人员",  bigMan);
      }
 }

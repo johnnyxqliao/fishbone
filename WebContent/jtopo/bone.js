@@ -1,15 +1,3 @@
-// var fishBrain = null;
-// var manNode= null;
-// var machineNode= null;
-// var materialNode= null;
-// var methodNode = null;
-// var environmentNode= null;
-// var measureNode= null; 
-//$(document).ready(function(){
-//	 drawing();
-// });
-//
-//function drawing(){
 	//文本换行函数
 	CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
 	    var textArray = str.split('\n');
@@ -48,7 +36,7 @@ fishBrain.textPosition = 'Middle_Center';// 文字居中
 fishBrain.textOffsetY =-8;
 fishBrain.font = '18px 微软雅黑';// 字体
 fishBrain.fontColor = "0,0,0";
-fishBrain.setLocation(800, 215);// 位置
+fishBrain.setLocation(900, 320);// 位置
 fishBrain.setSize(180, 60);// 尺寸
 fishBrain.borderRadius = 10;// 圆角
 fishBrain.borderWidth = 2;// 边框的宽度
@@ -73,17 +61,27 @@ function mainBone(mainNode){
 /**
  * 定义六个主骨的位置
  */
-function IniLine(Node, x2, y2, text){
+
+function IniLine(x1, y1, x2, y2, text){
+	
+	var pointNode = new JTopo.Node(); 
+	pointNode.id = text;
+	pointNode.setLocation(x1, y1);
+	pointNode.setSize(1, 1);
+	pointNode.layout = {type: 'tree'}
+	scene.add(pointNode);
+	mainBone(pointNode);
 
     //定义六个相关节点的信息
     var subNode = new JTopo.Node();
-    if (y2>245){
+    if (y2>350){
         subNode.setLocation(x2+100, y2-198);
         subNode.rotate = -1.2;
     }else{
         subNode.setLocation(x2+92, y2+198);
-        subNode.rotate = 1.15;
+        subNode.rotate = 1.2;
     }
+    subNode.id = text;
     subNode.text = text;// 文字
     subNode.textPosition = 'Middle_Center';// 文字居中
     subNode.textOffsetY =-8;
@@ -96,74 +94,45 @@ function IniLine(Node, x2, y2, text){
     // subNode.dragable = false;
     scene.add(subNode);
     //连线
-    if(y2<245){
-        var link = new JTopo.FlexionalLink(Node, subNode,null,[0, 0, 0, 0, 0, 0, 0, 0]);
+    if(y2<350){
+        var link = new JTopo.FlexionalLink(pointNode, subNode,null,[0, 0, 0, 0, 0, 0, 0, 0]);
     }else{
-        link = new JTopo.FlexionalLink(Node, subNode,null,[0, 0, 0, 0, 0, 0, 0, 0]);
+        link = new JTopo.FlexionalLink(pointNode, subNode,null,[0, 0, 0, 0, 0, 0, 0, 0]);
     }
     link.direction = 'horizontal' || 'horizontal';
     link.lineWidth = 1;
     link.strokeColor = '0,0,0';
     scene.add(link);
-    return link;
+    return [link, subNode, pointNode];
 }
 //人员
-var manNode = new JTopo.Node(); 
-manNode.id = "人员";
-manNode.setLocation(117, 245);
-manNode.setSize(1, 1);
-manNode.layout = {type: 'tree'}
-scene.add(manNode);
-mainBone(manNode);
-
+var manNodeLink= IniLine(150, 350, 0, 575, "人员");
+var manNode = manNodeLink[2];
+var bigMan = manNodeLink[1];
+manNodeLink[0];
 //机器
-var machineNode = new JTopo.Node();
-machineNode.id = "机器";
-machineNode.setLocation(241, 245);
-machineNode.setSize(1, 1);
-machineNode.layout = {type: 'tree'}
-scene.add(machineNode);
-mainBone(machineNode);
-
+var machineNodeLink= IniLine(270, 350, 130, 95, "机器");
+var machineNode = machineNodeLink[2];
+var bigMachine = machineNodeLink[1];
+machineNodeLink[0];
 //材料
-var materialNode = new JTopo.Node();
-materialNode.id = "材料";
-materialNode.setLocation(367, 245);
-materialNode.setSize(1, 1);
-materialNode.layout = {type: 'tree'}
-scene.add(materialNode);
-mainBone(materialNode);
-
+var materialNodeLink= IniLine(390, 350, 240, 575, "材料");
+var materialNode = materialNodeLink[2];
+var bigMaterial = materialNodeLink[1];
+materialNodeLink[0];
 //方法
-var methodNode = new JTopo.Node();
-methodNode.id = "方法";
-methodNode.setLocation(491, 245);
-methodNode.setSize(1, 1);
-methodNode.layout = {type: 'tree'}
-scene.add(methodNode);
-mainBone(methodNode);
-
+var methodNodeLink= IniLine(510, 350, 370, 95, "方法");
+var methodNode = methodNodeLink[2];
+var bigMethod = methodNodeLink[1];
+methodNodeLink[0];
 //环境
-var environmentNode = new JTopo.Node();
-environmentNode.id = "环境";
-environmentNode.setLocation(617, 245);
-environmentNode.setSize(1, 1);
-environmentNode.layout = {type: 'tree'}
-scene.add(environmentNode);
-mainBone(environmentNode);
-
+var environmentNodeLink= IniLine(630, 350, 480, 575, "环境");
+var environmentNode = environmentNodeLink[2];
+var bigEnvironment = environmentNodeLink[1];
+environmentNodeLink[0];
 //测量
-var measureNode = new JTopo.Node();
-measureNode.id = "测量";
-measureNode.setLocation(741, 245);
-measureNode.setSize(1, 1);
-measureNode.layout = {type: 'tree'}
-scene.add(measureNode);
-mainBone(measureNode);
+var measureNodeLink= IniLine(750, 350, 610, 95, "测量");
+var measureNode = measureNodeLink[2];
+var bigMeasure = measureNodeLink[1];
+measureNodeLink[0];
 
-iniLineMan = IniLine(manNode, -20, 470, "人 员");
-iniLineMachine = IniLine(machineNode, 110, -10, "机 器");
-iniLineMaterial = IniLine(materialNode, 230, 470, "材 料");
-iniLineMethod = IniLine(methodNode, 360, -10, "方 法");
-iniLineEnvironment = IniLine(environmentNode, 480, 470, "环 境");
-iniLineMeasure = IniLine(measureNode, 610, -10, "测 量");

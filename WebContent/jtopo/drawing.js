@@ -101,12 +101,12 @@ function process_wb(wb) {
     //将表格中获取的数据发送到前台界面
     fishBrain.text = excelData[2].split(",")[0];
     zNodes[0].name = fishBrain.text;
-    drawSecThirClaNode ("测量",  measureNode);
-    drawSecThirClaNode ("环境",  environmentNode);
-    drawSecThirClaNode ("方法",  methodNode);
-    drawSecThirClaNode ("材料",  materialNode);
-    drawSecThirClaNode ("机器",  machineNode);
-    drawSecThirClaNode ("人员",  manNode);
+    drawSecThirClaNode ("测量",  bigMeasure);
+    drawSecThirClaNode ("环境",  bigEnvironment);
+    drawSecThirClaNode ("方法",  bigMethod);
+    drawSecThirClaNode ("材料",  bigMaterial);
+    drawSecThirClaNode ("机器",  bigMachine);
+    drawSecThirClaNode ("人员",  bigMan);
     
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     
@@ -116,6 +116,7 @@ function process_wb(wb) {
 /**
  * 新建树节点对象函数
  */
+
 function newTreeNode(id, fontCla, name, num){
 	var strId = null;
 	var strpId = null;
@@ -136,12 +137,18 @@ function newTreeNode(id, fontCla, name, num){
 /**
  * 画第二级和第三级函数
  */
-
+//var storeArr = new Array();
 function drawSecThirClaNode(str1, attriNode){
-    var thirdArr = new Array();
+    var pointerArr = [0, 0];//定义一个指针
     var numArr = new Array();
     numArr[0] = 0;
     var materialPosition = searchLine(str1);
+    pointerArr[0]=materialPosition[0]+1;
+	pointerArr[1]=materialPosition[1]+1;
+	var secClaNode = secondClassNodePosition(0, excelData[pointerArr[0]].split(",")[pointerArr[1]], attriNode);
+	storeArr.push(secClaNode);
+	storeArr.push(1);
+	storeArr[1] = 0;//采用数组的方式存储每个节点以及每个节点的下一级子节点个数，并不断跟新
     for(t=materialPosition[0]+1; t<excelData.length;t++){
     	if(excelData[t].split(",")[1]!==""){
     		var mater_to_meth = t-materialPosition[0]-1;//定义材料和方法之间的距离，也就是确定材料的子元素个数
@@ -150,41 +157,110 @@ function drawSecThirClaNode(str1, attriNode){
     		mater_to_meth = excelData.length-materialPosition[0]-1;
     	}
     }
-//    var methodPosition = searchLine(str2);
-//    var mater_to_meth = methodPosition[0]-materialPosition[0]-1;
-    var num = 0;//用于记录第三级节点个数
-    for(var i=0; i<mater_to_meth-num; i++){
-        materialPosition[0] +=numArr[i];
-        if(isNull(materialPosition) > 1){
-            num +=1;
-            var sum = 0;
-            for(t=0;t<i;t++){
-            	sum +=(numArr[t]-1);
-            }
-            newTreeNode(i, str1, excelData[materialPosition[0]+1].split(",")[materialPosition[1]+1], sum);//将表格中的数据保存在树状结构中
-            var secClaNode = secondClassNodePosition(i, excelData[materialPosition[0]+1].split(",")[materialPosition[1]+1], attriNode);//将材料的第二级子元素添加到画布上
-            var secondLink = secClaNode[1];
-            thirdArr[0] = materialPosition[0]+1;
-            thirdArr[1] = materialPosition[1]+1;
-            for(var m=0; isNull(thirdArr)>1; m++){
-            	newTreeNode(m, excelData[materialPosition[0]+1].split(",")[materialPosition[1]+1], excelData[thirdArr[0]+1].split(",")[thirdArr[1]+1], 0);
-                thirdClassNodePosition(num-1, excelData[thirdArr[0]+1].split(",")[thirdArr[1]+1], secClaNode[0]);//将材料的第三级子元素添加到画布上
-                thirdArr[0] +=1;
-                num +=1;
-            }
-        }
-        numArr.push(num);
+    for(var i=0; i<mater_to_meth; i++){
+    	
+    	var newPointer = pointerRenew(pointerArr, attriNode, secClaNode);
+    	pointerArr = newPointer[0];
+    	attriNode = newPointer[1];
+    	secClaNode =  newPointer[2];
+    	
+    }
+}
+
+/**
+ * 指针遍历函数
+ */
+
+function pointerRenew(curPointer, fontRootNode, pointerNode){
+	
+	var underRootNode = isNull([curPointer[0]+1, curPointer[1]]);//指针下方节点是否为空
+	var slashRootNode = isNull([curPointer[0]+1, curPointer[1]+1]);//指针右下方节点是否为空
+	
+	if(underRootNode>1 && slashRootNode<2){//指针下方不为空
+		var addNum = testNodeNum(fontRootNode);
+		
+		var secClaNode = secondClassNodePosition(storeArr[addNum+1], excelData[curPointer[0]+1].split(",")[curPointer[1]], fontRootNode);//将材料的第二级子元素添加到画布上
+		storeArr[addNum+1] +=1;
+		curPointer[0] = curPointer[0]+1;
+        curPointer[1] = curPointer[1];
+        return [curPointer, pointerNode, secClaNode];//返回更新后的指针，添加的节点以及上一级节点
+	}else if(underRootNode<2 && slashRootNode>1){//指针右下角不为空
+		var addNum = testNodeNum(pointerNode);
+		
+		var thirClaNode = thirdClassNodePosition(storeArr[addNum+1], excelData[curPointer[0]+1].split(",")[curPointer[1]+1], pointerNode);//将材料的第三级子元素添加到画布上
+		storeArr[addNum+1] +=1;
+		curPointer[0] = curPointer[0]+1;
+        curPointer[1] = curPointer[1]+1;
+        return [curPointer, pointerNode, thirClaNode];
+	}else if(underRootNode<2 && slashRootNode<2){
+		var addNum = testNodeNum(fontRootNode);
+		
+		for(var t=0; t<curPointer[1]; t++){//检测下一行非空的位置
+			var newPosi = isNull([curPointer[0]+1, t]);
+			if(newPosi>1){
+				curPointer[0] = curPointer[0]+1;
+			    curPointer[1] = t;
+				break;
+			}
+		}
+		var secClaNode = secondClassNodePosition(storeArr[addNum+1], excelData[curPointer[0]].split(",")[curPointer[1]], fontRootNode);//将材料的第二级子元素添加到画布上
+		storeArr[addNum+1] +=1;
+       
+        return [curPointer, pointerNode, secClaNode];
+	}
+}
+
+/**
+ * 检测节点添加次数
+ */
+
+function testNodeNum(testNode){
+	var addNum = storeArr.indexOf(testNode);
+	if(addNum<0){
+		storeArr.push(testNode);
+		storeArr.push(0);
+		return storeArr.length-2;
+	}else{
+		return addNum;
+	}
+}
+
+/**
+ * 字符串判断是否为空
+ */
+
+function isNull(arr){
+    var str = excelData[arr[0]].split(",")[arr[1]];
+    var num = 1;
+    var num1 = 1;
+    if(str.length == 0){
         num = 0;
     }
-    var maxNum = Math.max.apply(null, numArr)
-    mainBoneAdaptSelf(maxNum, attriNode);
+    if(str.replace(/(^\s*)|(\s*$)/g, "").length ==0){
+        num1 = 0;
+    }
+    return num+num1;
 }
+
+/**
+ * 检索特定数据所在的行号和列号
+ */
+
+function searchLine(str) {
+    for (var i = 0; i < excelData.length; i++) {
+        var searchColumnNum = excelData[i].split(",").indexOf(str);
+        if (searchColumnNum !== -1) {
+            return [i, searchColumnNum];
+        }
+    }
+}
+
 
 /**
  * 主骨自适应函数
  */
 function mainBoneAdaptSelf(num, upperBone){
-    var criNum = num-5;
+    var criNum = num-4;
     if(criNum>0){
         if(upperBone.id==="测量"){
             layoutAdaptSelf(methodNode, criNum);
@@ -220,22 +296,34 @@ function secondClassNodePosition(i, str, attriNode){
     var up_level = (id==="机器")||(id==="方法")||(id==="测量");
     var down_level = (id==="人员")||(id==="材料")||(id==="环境");
     if(down_level){
-        var x = tarNodex-(i+1)*30;
-        var y = -2.5*x + tarNodey+2.5*tarNodex-25;
+    	if(i==0){
+    		var x = tarNodex-20;
+    	}else{
+    		var x = tarNodex-(i)*35-20;
+    	}
+        var y = -2.5*x + tarNodey+2.5*tarNodex;
     }else if(up_level){
-        x = tarNodex-(i+1)*30;
-        y = 2.35*x + tarNodey-2.35*tarNodex;
+    	if(i==0){
+    		var x = tarNodex-20;
+    	}else{
+    		var x = tarNodex-(i)*35-20;
+    	}
+        y = 2.5*x + tarNodey-2.5*tarNodex;
     }
 
     var id = str+i;
     var excelnode = excelNode(x-65, y, str, id);//画节点
     excelnode.layout = {type: 'tree'};
-    var lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [0, 0, 0, 0, -30, 10, 45, 10]);
+    if(y>350){
+    	var lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, -20, 0, -30, 10, 60, 10]);
+    }else{
+    	lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, -20, 0, -30, -10, 55, -10]);
+    }
+    
     lineLink.direction = 'horizontal' || 'horizontal';
     scene.add(excelnode);
     scene.add(lineLink);
-    return [excelnode, lineLink];
-
+    return excelnode;
 }
 
 /**
@@ -246,82 +334,60 @@ function thirdClassNodePosition(num, str, parentNode){
     var childNode = new JTopo.Node(str);
     var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
     var y = parentNode.getBound().top;
-    if(y>245){//当前节点在鱼骨下方
+    if(y>350){//当前节点在鱼骨下方
         var coeff = y+2.5*x-20;
-        if(x<120){//判断当前节点在下方的那个位置
+        if(x<270){//判断当前节点在下方的那个位置
             var xChild = (coeff-y)/2.5-50*num;
-        }else if(120<x && x<370){
+        }else if(270<x && x<510){
             xChild = (coeff-y)/2.5-50*num;
         }else{
             xChild = (coeff-y)/2.5-50*num;
         }
     }else{
-        coeff = y-2.35*x-50;
-        if(x<245){//判断当前节点在下方的那个位置
-            xChild = (coeff-y)/(-2.35)-50*num;
-        }else if(245<x && x<495){
-            xChild = (coeff-y)/(-2.35)-50*num;
+        coeff = y-2.5*x-50;
+        if(x<150){//判断当前节点在下方的那个位置
+            xChild = (coeff-y)/(-2.5)-50*num;
+        }else if(150<x && x<390){
+            xChild = (coeff-y)/(-2.5)-50*num;
         }else{
-            xChild = (coeff-y)/(-2.35)-50*num;
+            xChild = (coeff-y)/(-2.5)-50*num;
         }
     }
-
-    var yChild = y+35;
+    
+    if(y>350){
+    	var yChild = y+50;
+    }else{
+    	var yChild = y-40;
+    }
+    childNode.id = str+num;
     childNode.setLocation(xChild, yChild);
     childNode.fontColor = "0,0,0";
 
     childNode.fillColor = "255,255,255";
     childNode.font = 'blod 14px 微软雅黑';
     // childNode.dragable = false;
-    if(yChild>245){
+    if(yChild>350){
         childNode.textOffsetY =-15;
-        childNode.rotate = -1.2;
-        var slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -10, 10, 2, -22]);
+        childNode.rotate = -1.4;
+        var slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -23, 22, 0, -38]);
     }else{
         childNode.textOffsetY =-23;
-        childNode.rotate = 1.2;
-        slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -10, 10, -23, -22]);
+        childNode.rotate = 1.4;
+        slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, -10, -10, -10, -23, -22, -7, 32]);
     }
-
 
     childNode.setSize(40, 10);
     scene.add(childNode);
 
     slashLink.direction = 'horizontal' || 'horizontal';
     scene.add(slashLink);
-}
-/**
- * 字符串判断是否为空
- */
-function isNull(arr){
-    var str = excelData[arr[0]+1].split(",")[arr[1]+1];
-    var num = 1;
-    var num1 = 1;
-    if(str.length == 0){
-        num = 0;
-    }
-    if(str.replace(/(^\s*)|(\s*$)/g, "").length ==0){
-        num1 = 0;
-    }
-    return num+num1;
-}
-
-/**
- * 检索特定数据所在的行号
- */
-
-function searchLine(str) {
-    for (var i = 0; i < excelData.length; i++) {
-        var searchColumnNum = excelData[i].split(",").indexOf(str);
-        if (searchColumnNum !== -1) {
-            return [i, searchColumnNum];
-        }
-    }
+    return childNode;
 }
 
 /**
  * 定义从excel中读取数据，并向画布中添加节点函数
  */
+
 var currentNode = null;
 function excelNode(x, y, text, id){
     //定义导入节点的基本属性
@@ -370,11 +436,11 @@ function addExcelNode(x, y, num) {
         }
     }else{
         if(x<245){//判断当前节点在下方的那个位置
-            xChild = (-330.75-y)/(-2.35)-50*num;
+            xChild = (-330.75-y)/(-2.5)-50*num;
         }else if(245<x && x<495){
-            xChild = (-918.25-y)/(-2.35)-50*num;
+            xChild = (-918.25-y)/(-2.5)-50*num;
         }else{
-            xChild = (-1508.1-y)/(-2.35)-50*num;
+            xChild = (-1508.1-y)/(-2.5)-50*num;
         }
     }
 
@@ -504,11 +570,11 @@ function addNode() {
             Node.push(id);
             Node.push(num);
             if(left<245){//判断当前节点在上方的那个位置
-                Node.push((-330.75-top)/(-2.35)-50+4);
+                Node.push((-330.75-top)/(-2.5)-50+4);
             }else if(245<left && left<495){
-                Node.push((-918.25-top)/(-2.35)-50+4);
+                Node.push((-918.25-top)/(-2.5)-50+4);
             }else{
-                Node.push((-1508.1-top)/(-2.35)-50+4);
+                Node.push((-1508.1-top)/(-2.5)-50+4);
             }
             Node.push(top);
             numnode = len/4;
