@@ -1,8 +1,8 @@
 function zoomIn(){
-	stage.zoomIn(0.93);
+	stage.zoomIn(0.9);
 }
 function zoomOut(){
-	stage.zoomOut(0.93);
+	stage.zoomOut(0.9);
 }
 function setCenter(){
 	stage.centerAndZoom()

@@ -103,10 +103,10 @@ function process_wb(wb) {
     zNodes[0].name = fishBrain.text;
     drawSecThirClaNode ("测量",  bigMeasure);
     drawSecThirClaNode ("环境",  bigEnvironment);
-    drawSecThirClaNode ("方法",  bigMethod);
-    drawSecThirClaNode ("材料",  bigMaterial);
-    drawSecThirClaNode ("机器",  bigMachine);
-    drawSecThirClaNode ("人员",  bigMan);
+//    drawSecThirClaNode ("方法",  bigMethod);
+//    drawSecThirClaNode ("材料",  bigMaterial);
+//    drawSecThirClaNode ("机器",  bigMachine);
+//    drawSecThirClaNode ("人员",  bigMan);
     
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     
@@ -134,86 +134,114 @@ function newTreeNode(id, fontCla, name, num){
 	zNodes.splice(nodePosi+id+num, 0 , newTreeNode);
 }
 
+
 /**
- * 画第二级和第三级函数
+ * 遍历节点并向画布中添加元素
  */
-//var storeArr = new Array();
+
 function drawSecThirClaNode(str1, attriNode){
-    var pointerArr = [0, 0];//定义一个指针
-    var numArr = new Array();
-    numArr[0] = 0;
-    var materialPosition = searchLine(str1);
-    pointerArr[0]=materialPosition[0]+1;
-	pointerArr[1]=materialPosition[1]+1;
-	var secClaNode = secondClassNodePosition(0, excelData[pointerArr[0]].split(",")[pointerArr[1]], attriNode);
-	storeArr.push(secClaNode);
-	storeArr.push(1);
-	storeArr[1] = 0;//采用数组的方式存储每个节点以及每个节点的下一级子节点个数，并不断跟新
-    for(t=materialPosition[0]+1; t<excelData.length;t++){
+	
+	var posiOffset = [0, 0];//位置补偿数组，存放节点补偿信息
+	var update = []//存放最大长度
+	var nodeArr = new Array();//建立一个存放节点信息数组
+    var materialPosi = searchLine(str1);
+    nodeArr.push([materialPosi[0], materialPosi[1], attriNode, 0]);//将节点的基本信息存放在数组中（坐标、节点以及添加子节点的个数）
+    for(t=materialPosi[0]+1; t<excelData.length;t++){
     	if(excelData[t].split(",")[1]!==""){
-    		var mater_to_meth = t-materialPosition[0]-1;//定义材料和方法之间的距离，也就是确定材料的子元素个数
+    		var mater_to_meth = t-materialPosi[0]-1;//定义材料和方法之间的距离，也就是确定材料的子元素个数
     		break;
     	}else{
-    		mater_to_meth = excelData.length-materialPosition[0]-1;
+    		mater_to_meth = excelData.length-materialPosi[0]-1;
+    	}
+    } 
+    for(var i=materialPosi[0]+1; i<mater_to_meth+materialPosi[0]; i++){
+    	var len = excelData[i].split(",").length;
+    	for(var j=0; j<len; j++){//寻找某一行不为空元素的位置,并将其添加到画布上
+    		var nodeIsNull = isNull([i, j]);
+    		var rootNode = null;
+    		var curNode = null;
+    		if(nodeIsNull>1){
+    			
+    			for(t=nodeArr.length-1; t>=0; t--){//从数组中检索当前节点的父节点(在数组中倒叙检索)
+    				if(nodeArr[t][1]==j-1){
+    					rootNode = nodeArr[t][2];
+    					
+        				if(j%2==0){//通过当前节点的列号，判断节点应该水平添加还是倾斜添加
+        					if(j==2){//将第二级和偶数级的节点分开添加
+    					          secClaNode = secondClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//水平添加节点
+      					          var recoffset = recOffset(j, nodeArr[t][3], posiOffset);
+      					          posiOffset = recoffset[0];
+      					          update.push(recoffset[1]);
+     					          nodeArr[t][3] +=1;
+      					          curNode = secClaNode;
+        					}else{
+    					        evenClaNode = evenClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//水平添加节点
+    					        recOffset(j, nodeArr[t][3], posiOffset);
+    					        posiOffset = recoffset[0];
+    					        update.push(recoffset[1]);
+    					        nodeArr[t][3] +=1;
+    					        curNode = evenClaNode;
+
+        					}
+        				}else{
+        					if(j==3){//将第1级和奇数级的节点分开添加
+    					        slashNode = thirdClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//倾斜添加节点
+    					        recOffset(j, nodeArr[t][3], posiOffset);
+    					        posiOffset = recoffset[0];
+    					        update.push(recoffset[1]);
+    					        nodeArr[t][3] +=1;
+    					        curNode = slashNode;
+
+        					}else{
+    					        slashNode = oddClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//倾斜添加节点
+     					        recOffset(j, nodeArr[t][3], posiOffset);
+      					       posiOffset = recoffset[0];
+      					     update.push(recoffset[1]);
+    					         nodeArr[t][3] +=1;
+     					        curNode = slashNode;
+
+        					}
+        				}
+    					break;
+    				}
+    			}
+    			nodeArr.push([i, j, curNode, 0]);
+    		}
     	}
     }
-    for(var i=0; i<mater_to_meth; i++){
-    	
-    	var newPointer = pointerRenew(pointerArr, attriNode, secClaNode);
-    	pointerArr = newPointer[0];
-    	attriNode = newPointer[1];
-    	secClaNode =  newPointer[2];
-    	
-    }
 }
+
 
 /**
- * 指针遍历函数
+ * 记录当前添加节点的长度和宽度
  */
-
-function pointerRenew(curPointer, fontRootNode, pointerNode){
-	
-	var underRootNode = isNull([curPointer[0]+1, curPointer[1]]);//指针下方节点是否为空
-	var slashRootNode = isNull([curPointer[0]+1, curPointer[1]+1]);//指针右下方节点是否为空
-	
-	if(underRootNode>1 && slashRootNode<2){//指针下方不为空
-		var addNum = testNodeNum(fontRootNode);
-		
-		var secClaNode = secondClassNodePosition(storeArr[addNum+1], excelData[curPointer[0]+1].split(",")[curPointer[1]], fontRootNode);//将材料的第二级子元素添加到画布上
-		storeArr[addNum+1] +=1;
-		curPointer[0] = curPointer[0]+1;
-        curPointer[1] = curPointer[1];
-        return [curPointer, pointerNode, secClaNode];//返回更新后的指针，添加的节点以及上一级节点
-	}else if(underRootNode<2 && slashRootNode>1){//指针右下角不为空
-		var addNum = testNodeNum(pointerNode);
-		
-		var thirClaNode = thirdClassNodePosition(storeArr[addNum+1], excelData[curPointer[0]+1].split(",")[curPointer[1]+1], pointerNode);//将材料的第三级子元素添加到画布上
-		storeArr[addNum+1] +=1;
-		curPointer[0] = curPointer[0]+1;
-        curPointer[1] = curPointer[1]+1;
-        return [curPointer, pointerNode, thirClaNode];
-	}else if(underRootNode<2 && slashRootNode<2){
-		var addNum = testNodeNum(fontRootNode);
-		
-		for(var t=0; t<curPointer[1]; t++){//检测下一行非空的位置
-			var newPosi = isNull([curPointer[0]+1, t]);
-			if(newPosi>1){
-				curPointer[0] = curPointer[0]+1;
-			    curPointer[1] = t;
-				break;
-			}
+function recOffset(j, num, posiOffset){
+	var posiOffset = posiOffset;//位置补偿数组，存放节点补偿信息
+	var update = []//存放最大长度
+	if(j%2==0){
+		if(num==0){//首次添加水平节点
+			posiOffset[0] +=40;
+		}else{//正常添加水平节点
+		    posiOffset[0] +=10;
+		    posiOffset[1] +=40;
 		}
-		var secClaNode = secondClassNodePosition(storeArr[addNum+1], excelData[curPointer[0]].split(",")[curPointer[1]], fontRootNode);//将材料的第二级子元素添加到画布上
-		storeArr[addNum+1] +=1;
-       
-        return [curPointer, pointerNode, secClaNode];
+	}else{
+		if(num==0){//首次添加斜线节点
+			posiOffset[0] +=200;
+			posiOffset[1] +=40;
+		}else{//正常添加斜线节点
+		    posiOffset[0] +=35;
+		}
+
 	}
+	update.push(posiOffset[0]);
+	return [posiOffset, update[0]];
 }
+
 
 /**
  * 检测节点添加次数
  */
-
 function testNodeNum(testNode){
 	var addNum = storeArr.indexOf(testNode);
 	if(addNum<0){
@@ -289,35 +317,33 @@ function layoutAdaptSelf(layoutNode, criNum){
  * 第二级节点的放置位置
  */
 
-function secondClassNodePosition(i, str, attriNode){
+function secondClassNodePosition(i, str, attriNode, posiOffset){
     var tarNodex = attriNode.getBound().left;
     var tarNodey = attriNode.getBound().top;
     var id = attriNode.id;
-    var up_level = (id==="机器")||(id==="方法")||(id==="测量");
-    var down_level = (id==="人员")||(id==="材料")||(id==="环境");
-    if(down_level){
+    if(tarNodey>350){
     	if(i==0){
-    		var x = tarNodex-20;
+    		var x = tarNodex;
     	}else{
-    		var x = tarNodex-(i)*35-20;
+    		var x = tarNodex-(i)*20;
     	}
         var y = -2.5*x + tarNodey+2.5*tarNodex;
-    }else if(up_level){
+    }else if(tarNodey<350){
     	if(i==0){
-    		var x = tarNodex-20;
+    		var x = tarNodex;
     	}else{
-    		var x = tarNodex-(i)*35-20;
+    		var x = tarNodex-(i)*20;
     	}
         y = 2.5*x + tarNodey-2.5*tarNodex;
     }
 
     var id = str+i;
-    var excelnode = excelNode(x-65, y, str, id);//画节点
+    var excelnode = excelNode(x-45, y, str, id);//画节点
     excelnode.layout = {type: 'tree'};
     if(y>350){
-    	var lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, -20, 0, -30, 10, 60, 10]);
+    	var lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-3, -43, -20, 0, -30, 10, 40, 10]);
     }else{
-    	lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, -20, 0, -30, -10, 55, -10]);
+    	lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-3, 43, -20, 0, -30, -10, 33, -10]);
     }
     
     lineLink.direction = 'horizontal' || 'horizontal';
@@ -330,37 +356,29 @@ function secondClassNodePosition(i, str, attriNode){
  * 第三级节点放置位置
  */
 
-function thirdClassNodePosition(num, str, parentNode){
+function thirdClassNodePosition(num, str, parentNode, posiOffset){
     var childNode = new JTopo.Node(str);
     var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
     var y = parentNode.getBound().top;
-    if(y>350){//当前节点在鱼骨下方
-        var coeff = y+2.5*x-20;
-        if(x<270){//判断当前节点在下方的那个位置
-            var xChild = (coeff-y)/2.5-50*num;
-        }else if(270<x && x<510){
-            xChild = (coeff-y)/2.5-50*num;
-        }else{
-            xChild = (coeff-y)/2.5-50*num;
-        }
-    }else{
-        coeff = y-2.5*x-50;
-        if(x<150){//判断当前节点在下方的那个位置
-            xChild = (coeff-y)/(-2.5)-50*num;
-        }else if(150<x && x<390){
-            xChild = (coeff-y)/(-2.5)-50*num;
-        }else{
-            xChild = (coeff-y)/(-2.5)-50*num;
-        }
-    }
     
+    //计算横坐标
+    xChild = x-posiOffset[0];
+//    if(y>350){//当前节点在鱼骨下方
+//        var coeff = y+2.5*x-20;
+//        xChild = (coeff-y)/2.5-50*num;
+//    }else{
+//        coeff = y-2.5*x+180;
+//        xChild = (coeff-y)/(-2.5)-50*num;
+//    }
+    
+    //计算纵坐标
     if(y>350){
-    	var yChild = y+50;
+    	var yChild = y+40;
     }else{
     	var yChild = y-40;
     }
     childNode.id = str+num;
-    childNode.setLocation(xChild, yChild);
+    childNode.setLocation(xChild+15, yChild);
     childNode.fontColor = "0,0,0";
 
     childNode.fillColor = "255,255,255";
@@ -368,15 +386,15 @@ function thirdClassNodePosition(num, str, parentNode){
     // childNode.dragable = false;
     if(yChild>350){
         childNode.textOffsetY =-15;
-        childNode.rotate = -1.4;
-        var slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -23, 22, 0, -38]);
+        childNode.rotate = -1.2;
+        var slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -23, 22, 0, -28]);
     }else{
         childNode.textOffsetY =-23;
-        childNode.rotate = 1.4;
-        slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, -10, -10, -10, -23, -22, -7, 32]);
+        childNode.rotate = 1.2;
+        slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, -10, -10, -10, -23, -22, 0, 32]);
     }
 
-    childNode.setSize(40, 10);
+    childNode.setSize(30, 10);
     scene.add(childNode);
 
     slashLink.direction = 'horizontal' || 'horizontal';
@@ -384,10 +402,10 @@ function thirdClassNodePosition(num, str, parentNode){
     return childNode;
 }
 
+
 /**
  * 定义从excel中读取数据，并向画布中添加节点函数
  */
-
 var currentNode = null;
 function excelNode(x, y, text, id){
     //定义导入节点的基本属性
@@ -403,88 +421,107 @@ function excelNode(x, y, text, id){
     // excelNode.dragable = false;
     excelNode.borderWidth = 0.1;
     scene.add(excelNode);
-    //定义从excel中导入节点的右键函数
-    excelNode.addEventListener('mouseup', function(event){
-        currentNode = this;
-        handler(event);
-    });
-    stage.click(function(event){
-        if(event.button == 0){
-            $("#contextmenu").hide();
-        }
-    });
+   
     return excelNode;
 }
 
+
 /**
- *右键添加子节点方法
+ *偶数级添加子节点函数
  */
-
-function addExcelNode(x, y, num) {
-    var string = prompt("请添加原因", "");
-    var str = lineFeed(string);
-    console.log(str);
-    var childNode = new JTopo.Node(str);
-
-    if(y>220){//当前节点在鱼骨下方
-        if(x<120){//判断当前节点在下方的那个位置
-            var xChild = (520-y)/2.5-50*num;
-        }else if(120<x && x<370){
-            xChild = (1145-y)/2.5-50*num;
-        }else{
-            xChild = (1770-y)/2.5-50*num;
-        }
-    }else{
-        if(x<245){//判断当前节点在下方的那个位置
-            xChild = (-330.75-y)/(-2.5)-50*num;
-        }else if(245<x && x<495){
-            xChild = (-918.25-y)/(-2.5)-50*num;
-        }else{
-            xChild = (-1508.1-y)/(-2.5)-50*num;
-        }
+function evenClassNodePosition(i, str, attriNode, posiOffset){
+    var tarNodex = attriNode.getBound().left;
+    var tarNodey = attriNode.getBound().top;
+    var id = attriNode.id;
+    if(tarNodey>350){
+    	if(i==0){
+    		var x = tarNodex;
+    	}else{
+    		var x = tarNodex-(i)*15;
+    	}
+        var y = -2.5*x + tarNodey+2.5*tarNodex;
+    }else if(tarNodey<350){
+    	if(i==0){
+    		x = tarNodex+5;
+    		y = 2.5*x + tarNodey-2.5*tarNodex;
+    	}else{
+    	y = tarNodey-posiOffset[1];
+    	x = (y-tarNodey+2.5*tarNodex)/2.5;
+    	}
+    	
+//    	if(i==0){
+//    		x = tarNodex+5;
+//    	}else{
+//    		x = tarNodex-(i)*15;
+//    	}
+//        y = 2.5*x + tarNodey-2.5*tarNodex;
     }
 
-    var yChild = y+35;
-    childNode.setLocation(xChild, yChild);
+    
+    
+    var id = str+i;
+    var excelnode = excelNode(x-55, y, str, id);//画节点
+    excelnode.layout = {type: 'tree'};
+    if(y>350){
+    	var lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, 0, 0, -30, 10, 40, 10]);
+    }else{
+    	lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, -15, 0, -30, -10, 27, -10]);
+    }
+    
+    lineLink.direction = 'horizontal' || 'horizontal';
+    scene.add(excelnode);
+    scene.add(lineLink);
+    return excelnode;
+}
+
+/**
+ *奇数级添加子节点函数
+ */
+function oddClassNodePosition(num, str, parentNode, posiOffset){
+    var childNode = new JTopo.Node(str);
+    var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
+    var y = parentNode.getBound().top;
+    if(y>350){//当前节点在鱼骨下方
+        var coeff = y+2.5*x-20;
+        xChild = (coeff-y)/2.5-50*num;
+    }else{
+        coeff = y-2.5*x+180;
+        xChild = (coeff-y)/(-2.5)-50*num;
+    }
+    
+    if(y>350){
+    	var yChild = y+40;
+    }else{
+    	var yChild = y-40;
+    }
+    childNode.id = str+num;
+    childNode.setLocation(xChild+15, yChild);
     childNode.fontColor = "0,0,0";
-    childNode.textOffsetY =-15;
+
     childNode.fillColor = "255,255,255";
     childNode.font = 'blod 14px 微软雅黑';
-    childNode.dragable = false;
-    if(y>220){
+    // childNode.dragable = false;
+    if(yChild>350){
+        childNode.textOffsetY =-15;
         childNode.rotate = -1.2;
+        var slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -23, 22, 0, -28]);
     }else{
+        childNode.textOffsetY =-23;
         childNode.rotate = 1.2;
+        slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, -10, -10, -10, -23, -22, 0, 32]);
     }
 
-    childNode.setSize(40, 10);
+    childNode.setSize(30, 10);
     scene.add(childNode);
-    var x1 = xChild+4;
-    var y1 = yChild+20;
-    if(y>220){
-        var y2 = y1-55;
-        var x2 = x1+0;
-    }else{
-        var y2 = y1-55;
-        var x2 = x1-30;
-    }
-    var slashLink = new JTopo.FlexionalLink(currentNode, childNode, null, [10, 10, -10, 10, -10, 10, 2, -22]);
+
     slashLink.direction = 'horizontal' || 'horizontal';
     scene.add(slashLink);
-    num += 1;
-
-    //定义从excel中导入节点的右键函数
-    childNode.addEventListener('mouseup', function(event){
-        currentNode = this;
-        handler(event);
-    });
-    stage.click(function(event){
-        if(event.button == 0){
-            $("#contextmenu").hide();
-        }
-    });
-    return [x2, y2, num];
+    return childNode;
 }
+
+
+
+
 
 /**
  * 超过四个节点换行函数
@@ -505,98 +542,10 @@ function lineFeed(string){
     return String;
 }
 
-/**
- *定义从excel中导出数据的连线函数
- */
-function handler(event) {
-    if (event.button == 2) {
-        $("#contextmenu").css({
-            top: event.pageY,
-            left: event.pageX
-        }).show();
-    }
-}
-/**
- *右键删除节点函数
- */
-function deleteNode(){
-    scene.remove(currentNode);
-    currentNode = null;
-    $("#contextmenu").hide();
-    console.log("删除节点");
-}
-/**
- *右键添加子节点函数
- */
-var Node = new Array();
-Node[0] = 0;
-Node[1] = 0;
-Node[2] = 0;
-Node[3] = 0;
-function addNode() {
-    var num = 1;//初始化节点右键次数
-    var len = Node.length;
-    var left = currentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
-    var top = currentNode.getBound().top;
-    var id = currentNode.getBound().id;
-
-    //输出与该节点对应的num,即该记录该节点右键次数
-    var idArray = new Array();
-    for (var i=0; i<len; i+=4){
-        idArray[i/4] = Node[i];
-    }
-    var numnode = idArray.indexOf(id);
-    console.log(numnode);
-    if(top>220){//当前节点在鱼骨下方
-        if(numnode==-1){
-            num = 1;
-            Node.push(id);
-            Node.push(num);
-            if(left<120){//判断当前节点在下方的那个位置
-                Node.push((520-top)/2.5-50+4);
-            }else if(120<left && left<370){
-                Node.push((1145-top)/2.5-50+4);
-            }else{
-                Node.push((1770-top)/2.5-50+4);
-            }
-            Node.push(top);
-            numnode = len/4;
-        }else{
-            num = Node[numnode*4+1];
-        }
-    }else{//当前节点在鱼骨的上方
-        if(numnode==-1){
-            num = 1;
-            Node.push(id);
-            Node.push(num);
-            if(left<245){//判断当前节点在上方的那个位置
-                Node.push((-330.75-top)/(-2.5)-50+4);
-            }else if(245<left && left<495){
-                Node.push((-918.25-top)/(-2.5)-50+4);
-            }else{
-                Node.push((-1508.1-top)/(-2.5)-50+4);
-            }
-            Node.push(top);
-            numnode = len/4;
-        }else{
-            num = Node[numnode*4+1];
-        }
-    }
-
-    console.log("这是更新前的数组："+Node);
-    var addNode = addExcelNode(left, top, num);
-
-    //将每次选择的节点存放在一个数组中，用于判断当前一共添加了几个节点
-    Node[numnode*4+1] = addNode[2];//更新num数值
-    console.log("这是更新后的数组："+Node);
-    currentNode = null;
-    $("#contextmenu").hide();
-}
 
 /**
- *读取excel内容函数 的主函数入口
+ *读取excel内容函数的主函数入口
  */
-
 var xlf = document.getElementById('xlf');
 function handleFile(e) {
     rABS = true;
