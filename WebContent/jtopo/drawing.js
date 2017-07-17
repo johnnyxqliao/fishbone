@@ -117,6 +117,7 @@ function process_wb(wb) {
  * 新建树节点对象函数
  */
 
+
 function newTreeNode(id, fontCla, name, num){
 	var strId = null;
 	var strpId = null;
@@ -145,7 +146,7 @@ function drawSecThirClaNode(str1, attriNode){
 	var update = []//存放最大长度
 	var nodeArr = new Array();//建立一个存放节点信息数组
     var materialPosi = searchLine(str1);
-    nodeArr.push([materialPosi[0], materialPosi[1], attriNode, 0]);//将节点的基本信息存放在数组中（坐标、节点以及添加子节点的个数）
+    nodeArr.push([materialPosi[0], materialPosi[1], attriNode, 0, [0, 0]]);//将节点的基本信息存放在数组中（坐标、节点、添加子节点的个数以及当前节点的位置补偿）
     for(t=materialPosi[0]+1; t<excelData.length;t++){
     	if(excelData[t].split(",")[1]!==""){
     		var mater_to_meth = t-materialPosi[0]-1;//定义材料和方法之间的距离，也就是确定材料的子元素个数
@@ -168,16 +169,16 @@ function drawSecThirClaNode(str1, attriNode){
     					
         				if(j%2==0){//通过当前节点的列号，判断节点应该水平添加还是倾斜添加
         					if(j==2){//将第二级和偶数级的节点分开添加
-    					          secClaNode = secondClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//水平添加节点
-      					          var recoffset = recOffset(j, nodeArr[t][3], posiOffset);
-      					          posiOffset = recoffset[0];
+    					          secClaNode = secondClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, nodeArr[t][4]);//水平添加节点
+      					          var recoffset = recOffset(j, nodeArr[t][3], nodeArr[t][4]);
+      					          nodeArr[t][4] = recoffset[0];
       					          update.push(recoffset[1]);
      					          nodeArr[t][3] +=1;
       					          curNode = secClaNode;
         					}else{
-    					        evenClaNode = evenClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//水平添加节点
-    					        recOffset(j, nodeArr[t][3], posiOffset);
-    					        posiOffset = recoffset[0];
+    					        evenClaNode = evenClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, nodeArr[t][4]);//水平添加节点
+    					        recOffset(j, nodeArr[t][3], nodeArr[t][4]);
+    					        nodeArr[t][4] = recoffset[0];
     					        update.push(recoffset[1]);
     					        nodeArr[t][3] +=1;
     					        curNode = evenClaNode;
@@ -185,17 +186,17 @@ function drawSecThirClaNode(str1, attriNode){
         					}
         				}else{
         					if(j==3){//将第1级和奇数级的节点分开添加
-    					        slashNode = thirdClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//倾斜添加节点
-    					        recOffset(j, nodeArr[t][3], posiOffset);
-    					        posiOffset = recoffset[0];
+    					        slashNode = thirdClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, nodeArr[t][4]);//倾斜添加节点
+    					        recOffset(j, nodeArr[t][3], nodeArr[t][4]);
+    					        nodeArr[t][4] = recoffset[0];
     					        update.push(recoffset[1]);
     					        nodeArr[t][3] +=1;
     					        curNode = slashNode;
 
         					}else{
-    					        slashNode = oddClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, posiOffset);//倾斜添加节点
-     					        recOffset(j, nodeArr[t][3], posiOffset);
-      					       posiOffset = recoffset[0];
+    					        slashNode = oddClassNodePosition(nodeArr[t][3], excelData[i].split(",")[j], rootNode, nodeArr[t][4]);//倾斜添加节点
+     					        recOffset(j, nodeArr[t][3], nodeArr[t][4]);
+     					       nodeArr[t][4] = recoffset[0];
       					     update.push(recoffset[1]);
     					         nodeArr[t][3] +=1;
      					        curNode = slashNode;
@@ -220,14 +221,14 @@ function recOffset(j, num, posiOffset){
 	var update = []//存放最大长度
 	if(j%2==0){
 		if(num==0){//首次添加水平节点
-			posiOffset[0] +=40;
+			posiOffset[0] +=70;
 		}else{//正常添加水平节点
 		    posiOffset[0] +=10;
 		    posiOffset[1] +=40;
 		}
 	}else{
 		if(num==0){//首次添加斜线节点
-			posiOffset[0] +=200;
+			posiOffset[0] +=40;
 			posiOffset[1] +=40;
 		}else{//正常添加斜线节点
 		    posiOffset[0] +=35;
@@ -235,7 +236,8 @@ function recOffset(j, num, posiOffset){
 
 	}
 	update.push(posiOffset[0]);
-	return [posiOffset, update[0]];
+	console.log(posiOffset);
+	return [posiOffset, update[update.length-1]];
 }
 
 
@@ -406,7 +408,6 @@ function thirdClassNodePosition(num, str, parentNode, posiOffset){
 /**
  * 定义从excel中读取数据，并向画布中添加节点函数
  */
-var currentNode = null;
 function excelNode(x, y, text, id){
     //定义导入节点的基本属性
     var excelNode = new JTopo.Node(text);
