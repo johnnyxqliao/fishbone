@@ -35,6 +35,7 @@
     tree2.setSize(20, 20);
     tree2.setLocation(300, 460);
     scene.add(tree2);
+    tree2.getBound.left;
     
      var linkSlash1 = new JTopo.Link(cloudNode, tree1);
     var linkSlash2 = new JTopo.Link(cloudNode, tree2);
@@ -47,14 +48,14 @@
 
     var tree3 = new JTopo.Node("test1");
     /*     tree1.rotate =Math.PI/3; */
-    tree3.setSize(35, 20);
+    tree3.setSize(20, 20);
     tree3.setLocation(400, 200);
     scene.add(tree3);
 
     var tree4 = new JTopo.Node("test2");
     /*     tree2.rotate =1.2; */
     tree4.setSize(20, 20);
-    tree4.setLocation(250, 300);
+    tree4.setLocation(400, 200);
     scene.add(tree4);
 
 function node(x, y) {

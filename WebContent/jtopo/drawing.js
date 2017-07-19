@@ -168,34 +168,22 @@ function drawSecThirClaNode(str1, attriNode){
     					
         				if(j%2==0){//通过当前节点的列号，判断节点应该水平添加还是倾斜添加
         					if(j==2){//将第二级和偶数级的节点分开添加
-//        						  recurNode(rootNode, j, nodeArr[t][4]);
-    					          secClaNode = secondClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//水平添加节点
-    					          recurNode(rootNode, j, nodeArr[t][4]);
-    					          var posiRec = recOffset(j, nodeArr[t][4], [0, 0]);
+    					          secClaNode = secondClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, [0, 0]);//水平添加节点
     					          nodeArr[t][4] +=1;//添加当前节点添加次数跟新
     					          curNode = secClaNode;
         					}else{
-//        						recurNode(rootNode, j, nodeArr[t][4]);
-    					        evenClaNode = evenClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//水平添加节点
-    					        recurNode(rootNode, j, nodeArr[t][4]);
-    					        var posiRec = recOffset(j, nodeArr[t][4], [0, 0]);
+    					        evenClaNode = evenClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, findRoot(rootNode));//水平添加节点
   					            nodeArr[t][4] +=1;//添加当前节点添加次数跟新
   					            curNode = evenClaNode;
         					}
         				}else{
         					if(j==3){//将第1级和奇数级的节点分开添加
-//        						recurNode(rootNode, j, nodeArr[t][4]);
-    					        slashNode = thirdClassNodePosition(excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//倾斜添加节点
-    					        recurNode(rootNode, j, nodeArr[t][4]);
-    					        var posiRec = recOffset(j, nodeArr[t][4], [0, 0]);
+    					        slashNode = thirdClassNodePosition(excelData[i].split(",")[j], rootNode, findRoot(rootNode));//倾斜添加节点
     					        nodeArr[t][4] +=1;//添加当前节点添加次数跟新
   					            curNode = slashNode;
 
         					}else{
-//        						recurNode(rootNode, j, nodeArr[t][4]);//每添加一次节点，需要对所有的上一级节点的补偿进行跟新
-    					        slashNode = oddClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//倾斜添加节点
-    					        recurNode(rootNode, j, nodeArr[t][4]);
-    					        var posiRec = recOffset(j, nodeArr[t][4], [0, 0]);
+    					        slashNode = oddClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, findRoot(rootNode));//倾斜添加节点
     					        nodeArr[t][4] +=1;//添加当前节点添加次数跟新
     					        curNode = slashNode;
         					}
@@ -203,54 +191,53 @@ function drawSecThirClaNode(str1, attriNode){
     					break;
     				}
     			}
-    			nodeArr.push([i, j, curNode, rootNode, 0, posiRec]);
-    			console.log(nodeArr);
+    			nodeArr.push([i, j, curNode, rootNode, 0, [0, 0]]);
+    			recurNode(curNode, rootNode);
+    			break;
     		}
+    		
     	}
     }
 /**
- * 记录当前添加节点的长度和宽度
+ * 寻找根节点
  */
-    function recOffset(j, num, posiOffset){
-    	var posiOffset = posiOffset;//位置补偿数组，存放节点补偿信息
-    	if(j%2==0){
-    		if(num==0){//首次添加水平节点
-    			posiOffset[0] +=60;
-    		}else{//正常添加水平节点
-    		    posiOffset[0] +=30;
-    		    posiOffset[1] +=40;
-    		}
-    	}else{
-    		if(num==0){//首次添加斜线节点
-    			posiOffset[0] +=30;
-    			posiOffset[1] +=40;
-    		}else{//正常添加斜线节点
-    		    posiOffset[0] +=30;
-    		}
-    	}
-    	return posiOffset;
-    }
+function findRoot(curNode){
+	for(p=0;p<nodeArr.length;p++){
+		if(nodeArr[p][2]==curNode){
+			for(q=0;q<nodeArr.length;q++){
+				if(nodeArr[q][2]==nodeArr[p][3]){
+					return nodeArr[q][5];
+					break;
+				}
+			}
+		}
+	}
+}
+    
 /**
  * 递归函数
  */
-    function recurNode(curNode, j, num){
+    function recurNode(curNode, rootNode){
     	
-    	if(curNode == null) return;
+    	if(rootNode == null) return;
     	var nextNode = null;
     	for(m=0;m<nodeArr.length;m++){//将当前节点的根节点寻找下一级的子节点
-    		if(nodeArr[m][2]==curNode){
-    			nodeArr[m][5] = recOffset(j, num, nodeArr[m][5]);
+    		if(nodeArr[m][2]==rootNode){
+    			offSetx = rootNode.getBound().left - curNode.getBound().left+10;
+    			offSety = rootNode.getBound().top - curNode.getBound().top+10;
+    			if(offSetx>nodeArr[m][5][0]){
+    				nodeArr[m][5][0] = offSetx;
+    			}
+    			if(offSety>nodeArr[m][5][1]){
+    				nodeArr[m][5][1] = offSety;
+    			}
     			nextNode = nodeArr[m][3];
     			break;
     		}
     	}
-    	return recurNode(nextNode, j, num);
+    	return recurNode(curNode, nextNode);
     }
-    mainBoneAdaptSelf(nodeArr[0][5], attriNode);
 }
-
-
-
 
 
 /**
@@ -344,7 +331,7 @@ function secondClassNodePosition(i, str, attriNode, posiOffset){
         var y = -2.5*x + tarNodey+2.5*tarNodex;
     }else if(tarNodey<350){
 
-    	y = tarNodey-posiOffset[1];
+    	y = tarNodey-posiOffset[1]-15;
     	x = (y+2.5*tarNodex-tarNodey)/2.5;
 //        y = 2.5*x + -2.5*tarNodex;
     }
@@ -374,7 +361,7 @@ function thirdClassNodePosition(str, parentNode, posiOffset){
     var y = parentNode.getBound().top;
     
     //计算横坐标
-    xChild = x-posiOffset[0];
+    xChild = x-posiOffset[0]+10;
 //    if(y>350){//当前节点在鱼骨下方
 //        var coeff = y+2.5*x-20;
 //        xChild = (coeff-y)/2.5-50*num;
@@ -453,8 +440,8 @@ function evenClassNodePosition(i, str, attriNode, posiOffset){
         var y = -2.5*x + tarNodey+2.5*tarNodex;
     }else if(tarNodey<350){
     	if(i==0){
-    		x = tarNodex+5;
-    		y = 2.5*x + tarNodey-2.5*tarNodex;
+        	y = tarNodey-posiOffset[1]+30;
+        	x = (y-tarNodey+2.5*tarNodex)/2.5;
     	}else{
     	y = tarNodey-posiOffset[1];
     	x = (y-tarNodey+2.5*tarNodex)/2.5;
@@ -491,7 +478,7 @@ function oddClassNodePosition(num, str, parentNode, posiOffset){
     }else{
 //        coeff = y-2.5*x+180;
 //        xChild = (coeff-y)/(-2.5)-50*num;
-        xChild = x-posiOffset[0];
+        xChild = x-posiOffset[0]+20;
         
     }
     
