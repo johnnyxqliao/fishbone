@@ -98,6 +98,15 @@ function process_wb(wb) {
     global_wb = wb;
     var output = to_csv(wb);
     excelData = output.split("\n");
+    var arr = [];
+    excelData.forEach(function(value, index, array){
+    	if(index>2){
+    	var element = value.split(",");
+    	arr.push(element);
+    	}
+    	
+    }, this);
+    excelData1 = init(arr);
     //将表格中获取的数据发送到前台界面
     fishBrain.text = excelData[2].split(",")[0];
     zNodes[0].name = fishBrain.text;
@@ -111,6 +120,11 @@ function process_wb(wb) {
     $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     
 }
+
+
+
+
+
 
 
 /**
@@ -168,22 +182,30 @@ function drawSecThirClaNode(str1, attriNode){
     					
         				if(j%2==0){//通过当前节点的列号，判断节点应该水平添加还是倾斜添加
         					if(j==2){//将第二级和偶数级的节点分开添加
-    					          secClaNode = secondClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, [0, 0]);//水平添加节点
+    					          secClaNode = secondClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//水平添加节点
+    					          x = rootNode.getBound().left - secClaNode.getBound().left;
+    				    		  y = rootNode.getBound().top - secClaNode.getBound().top;
     					          nodeArr[t][4] +=1;//添加当前节点添加次数跟新
     					          curNode = secClaNode;
         					}else{
-    					        evenClaNode = evenClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, findRoot(rootNode));//水平添加节点
+    					        evenClaNode = evenClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//水平添加节点
+    					        x = rootNode.getBound().left - evenClaNode.getBound().left;
+  				    		    y = rootNode.getBound().top - evenClaNode.getBound().top;
   					            nodeArr[t][4] +=1;//添加当前节点添加次数跟新
   					            curNode = evenClaNode;
         					}
         				}else{
         					if(j==3){//将第1级和奇数级的节点分开添加
-    					        slashNode = thirdClassNodePosition(excelData[i].split(",")[j], rootNode, findRoot(rootNode));//倾斜添加节点
+    					        slashNode = thirdClassNodePosition(excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//倾斜添加节点
+    					        x = rootNode.getBound().left - slashNode.getBound().left;
+  				    		    y = rootNode.getBound().top - slashNode.getBound().top;
     					        nodeArr[t][4] +=1;//添加当前节点添加次数跟新
   					            curNode = slashNode;
 
         					}else{
-    					        slashNode = oddClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, findRoot(rootNode));//倾斜添加节点
+    					        slashNode = oddClassNodePosition(nodeArr[t][4], excelData[i].split(",")[j], rootNode, nodeArr[t][5]);//倾斜添加节点
+    					        x = rootNode.getBound().left - slashNode.getBound().left;
+  				    		    y = rootNode.getBound().top - slashNode.getBound().top;
     					        nodeArr[t][4] +=1;//添加当前节点添加次数跟新
     					        curNode = slashNode;
         					}
@@ -191,7 +213,7 @@ function drawSecThirClaNode(str1, attriNode){
     					break;
     				}
     			}
-    			nodeArr.push([i, j, curNode, rootNode, 0, [0, 0]]);
+    			nodeArr.push([i, j, curNode, rootNode, 0, [x, y]]);
     			recurNode(curNode, rootNode);
     			break;
     		}
@@ -224,13 +246,13 @@ function findRoot(curNode){
     	for(m=0;m<nodeArr.length;m++){//将当前节点的根节点寻找下一级的子节点
     		if(nodeArr[m][2]==rootNode){
     			offSetx = rootNode.getBound().left - curNode.getBound().left+10;
-    			offSety = rootNode.getBound().top - curNode.getBound().top+10;
-    			if(offSetx>nodeArr[m][5][0]){
-    				nodeArr[m][5][0] = offSetx;
-    			}
-    			if(offSety>nodeArr[m][5][1]){
-    				nodeArr[m][5][1] = offSety;
-    			}
+    			offSety = rootNode.getBound().top - curNode.getBound().top+20;
+//    			if(offSetx>nodeArr[m][5][0]){
+    				nodeArr[m][5][0] += offSetx;
+//    			}
+//    			if(offSety>nodeArr[m][5][1]){
+    				nodeArr[m][5][1] += offSety;
+//    			}
     			nextNode = nodeArr[m][3];
     			break;
     		}
@@ -333,7 +355,6 @@ function secondClassNodePosition(i, str, attriNode, posiOffset){
 
     	y = tarNodey-posiOffset[1]-15;
     	x = (y+2.5*tarNodex-tarNodey)/2.5;
-//        y = 2.5*x + -2.5*tarNodex;
     }
 
     var id = str+i;
