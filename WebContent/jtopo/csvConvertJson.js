@@ -1,10 +1,11 @@
 function init(data) {
+//	for()
 	var nodes = [{
 	    'name': '鱼骨图',
 	    'children': [],
 
 	}];
-//	var data = [];
+
 	var p = {
 	    'name': '',
 	    'children': [
@@ -19,6 +20,7 @@ function init(data) {
         data.forEach(function (element, index) {
             if (i == 1) {
                 if (element[i] != '') {
+                	help=true;
                     var temp = {
                         'name': element[i],
                         'children': [],
@@ -29,7 +31,8 @@ function init(data) {
                     current.push(temp);
                 }
             } else {
-                if (element[i] != '') {
+                if (element[i] != '' &&element[i]!=undefined) {
+ 
                     for (var j = 0; j < pre.length; j++) {
                         if (index < pre[j].y) {
                             var temp = {
@@ -44,9 +47,21 @@ function init(data) {
                         }
                     }
                 }
+                if(element[i]==undefined){
+					var temp={
+							'name': element[i],
+                            'children': [],
+                            'parent': [],
+                            'y': index,
+					}
+					current.push(temp);
+				}
             }
         }, this);
         pre = current;
+        if(pre.length<2&&i>=1){
+        	break;
+        }
         current = [];
     }
     return nodes[0];

@@ -45,7 +45,7 @@ fishBrain.fillColor = '255,222,173';//边框颜色
 fishBrain.layout = {type: 'tree'}
 scene.add(fishBrain);
 var aa = fishBrain.getBound();
-console.log(aa);
+//console.log(aa);
 
 /**
  * 绘制鱼身函数

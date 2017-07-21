@@ -98,20 +98,23 @@ function process_wb(wb) {
     global_wb = wb;
     var output = to_csv(wb);
     excelData = output.split("\n");
+    //将表格中获取的数据发送到前台界面
+    fishBrain.text = excelData[2].split(",")[0];
+    zNodes[0].name = fishBrain.text;
+    
+    
     var arr = [];
     excelData.forEach(function(value, index, array){
     	if(index>2){
     	var element = value.split(",");
     	arr.push(element);
     	}
-    	
     }, this);
-    excelData1 = init(arr);
-    //将表格中获取的数据发送到前台界面
-    fishBrain.text = excelData[2].split(",")[0];
-    zNodes[0].name = fishBrain.text;
-    drawSecThirClaNode ("测量",  bigMeasure);
-    drawSecThirClaNode ("环境",  bigEnvironment);
+    excelData = init(arr);
+
+    cal(excelData.children[5], true, bigMeasure);
+//    drawSecThirClaNode ("测量",  bigMeasure);
+//    drawSecThirClaNode ("环境",  bigEnvironment);
 //    drawSecThirClaNode ("方法",  bigMethod);
 //    drawSecThirClaNode ("材料",  bigMaterial);
 //    drawSecThirClaNode ("机器",  bigMachine);
@@ -121,17 +124,234 @@ function process_wb(wb) {
     
 }
 
+/**
+ * 遍历json
+ */
+var verX = 25;//斜节点补偿
+var verY = 40;
+
+var horiX = 50;//水平节点补偿
+var horiY = 15;
+function cal(jsonNode, direction, rootNode){
+	if(jsonNode.children.length<1) return;
+	var nextNode = null;
+
+	jsonNode.children.forEach(function(value, index, array){
+
+		if(direction){//水平放置
+			if(value.children.length<1){
+				
+			}else{
+				
+			}
+
+			value['x'] = horiX;//计算横坐标补偿
+			value['y'] = horiY;
+			var nextNode = drawHori(rootNode, value, direction);
+		}else{//倾斜放置
+			if(value.children.length<1){
+                    value['x'] = verX;
+				    value['y'] = verY;
+				    var nextNode = drawVer(rootNode, value, direction, index);
+			}else{
+				value['x'] = verX;
+			    value['y'] = verY;
+			    var nextNode = drawVer(rootNode, value, direction, index);
+			}
+			
+		}
+		cal(value, !direction, nextNode);
+	}, this);
+}
 
 
+/**
+ * 绘制水平节点
+ */
+function drawHori(attriNode, curNode, direction){
+	    var tarNodex = attriNode.getBound().left;
+	    var tarNodey = attriNode.getBound().top;
+	    var id = attriNode.id;
+	    if(tarNodey>350){
+	    	if(i==0){
+	    		var x = tarNodex;
+	    	}else{
+	    		var x = tarNodex-(i)*20;
+	    	}
+	        var y = -2.5*x + tarNodey+2.5*tarNodex;
+	    }else if(tarNodey<350){
+
+	    	y = tarNodey-curNode.y;
+	    	x = (y+2.5*tarNodex-tarNodey)/2.5;
+	    }
+
+	    var id = curNode.name;
+	    var excelnode = excelNode(x-60, y, curNode.name, id);//画节点
+	    excelnode.layout = {type: 'tree'};
+	    
+	    var lineLink = drawLine(direction, excelnode);//绘制线上方的横线
+	    scene.add(excelnode);
+	    scene.add(lineLink);
+	    return excelnode;
+}
 
 
+/**
+ * 绘制倾斜节点
+ */
+function drawVer(parentNode, curNode, direction, index){
+    var childNode = new JTopo.Node(curNode.name);
+    var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
+    var y = parentNode.getBound().top;
+//计算横坐标
+//    if(index==0){//第一次添加斜节点
+    	xChild = x-curNode.x;
 
+//    }else{
+//    	xChild = x+30;
+//    	yChild = y;
+//    }
+	//计算y坐标
+    if(y>350){
+	    var yChild = y+40;
+    }else{
+	     var yChild = y-curNode.y;
+         } 
+
+    childNode.id = curNode.name;
+    childNode.setLocation(xChild, yChild);
+    childNode.fontColor = "0,0,0";
+
+    childNode.fillColor = "255,255,255";
+    childNode.font = 'blod 16px 微软雅黑';
+    if(yChild>350){
+        childNode.textOffsetY =-15;
+        childNode.rotate = -1.2;
+        var slashLink = drawLine(direction, excelnode);//绘制线上方的横线
+    }else{
+        childNode.textOffsetY =-23;
+        childNode.rotate = 1.2;
+        var slashLink = drawLine(direction, childNode);//绘制线上方的横线
+    }
+
+    childNode.setSize(30, 10);
+    scene.add(childNode);
+
+    scene.add(slashLink);
+    return childNode;
+}
+/**
+ *偶数级添加子节点函数
+ */
+function evenClassNodePosition(attriNode, curNode, direction){
+    var tarNodex = attriNode.getBound().left;
+    var tarNodey = attriNode.getBound().top;
+    var id = attriNode.id;
+    if(tarNodey>350){
+    	if(i==0){
+    		var x = tarNodex;
+    	}else{
+    		var x = tarNodex-(i)*15;
+    	}
+        var y = -2.5*x + tarNodey+2.5*tarNodex;
+    }else if(tarNodey<350){
+    	y = tarNodey-curNode.y;
+    	x = (y-tarNodey+2.5*tarNodex)/2.5;
+    }
+
+    
+    
+    var id = curNode.name;
+    var excelnode = excelNode(x-55, y, curNode.name, id);//画节点
+    excelnode.layout = {type: 'tree'};
+    var lineLink = drawLine(direction, excelnode);//绘制线上方的横线
+    
+    scene.add(excelnode);
+    scene.add(lineLink);
+    return excelnode;
+}
+
+/**
+ *奇数级添加子节点函数
+ */
+function oddClassNodePosition(parentNode, curNode){
+    var childNode = new JTopo.Node(curNode.name);
+    var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
+    var y = parentNode.getBound().top;
+    if(y>350){//当前节点在鱼骨下方
+        var coeff = y+2.5*x-20;
+        xChild = (coeff-y)/2.5-50*num;
+    }else{
+        xChild = x-curNode.x+20;
+        
+    }
+    
+    if(y>350){
+    	var yChild = y+40;
+    }else{
+    	var yChild = y-40;
+    }
+    childNode.id = curNode.name;
+    childNode.setLocation(xChild+15, yChild);
+    childNode.fontColor = "0,0,0";
+
+    childNode.fillColor = "255,255,255";
+    childNode.font = 'blod 14px 微软雅黑';
+    // childNode.dragable = false;
+    if(yChild>350){
+        childNode.textOffsetY =-15;
+        childNode.rotate = -1.2;
+        var slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -23, 22, 0, -28]);
+    }else{
+        childNode.textOffsetY =-23;
+        childNode.rotate = 1.2;
+        slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, -10, -10, -10, -23, -22, 0, 32]);
+    }
+
+    childNode.setSize(30, 10);
+    scene.add(childNode);
+
+    slashLink.direction = 'horizontal' || 'horizontal';
+    scene.add(slashLink);
+    return childNode;
+}
+
+/**
+ * 绘制文字上方或者下方线
+ */
+function drawLine(direction, lineNode){
+	x = lineNode.getBound().left;
+	y = lineNode.getBound().top;
+	if(direction){//水平节点横线
+		var lineNode1 = new JTopo.Node();
+		var lineNode2 = new JTopo.Node();
+		lineNode1.setLocation(x-15, y-5);
+		lineNode2.setLocation(x+55, y-5);
+		lineNode1.setSize(1, 1);
+		lineNode2.setSize(1, 1);
+		scene.add(lineNode2);
+		scene.add(lineNode1);
+	    var link = new JTopo.Link(lineNode1, lineNode2);
+	    link.lineWidth = 2; // 线宽
+	    scene.add(link);
+	}else{
+		var lineNode1 = new JTopo.Node();
+		var lineNode2 = new JTopo.Node();
+		lineNode1.setLocation(x-13, y-22);
+		lineNode2.setLocation(x+10, y+32);
+		lineNode1.setSize(1, 1);
+		lineNode2.setSize(1, 1);
+		scene.add(lineNode2);
+		scene.add(lineNode1);
+	    var link = new JTopo.Link(lineNode1, lineNode2);
+	    link.lineWidth =2; // 线宽
+	}
+	return link;
+}
 
 /**
  * 新建树节点对象函数
  */
-
-
 function newTreeNode(id, fontCla, name, num){
 	var strId = null;
 	var strpId = null;
@@ -443,96 +663,6 @@ function excelNode(x, y, text, id){
    
     return excelNode;
 }
-
-
-/**
- *偶数级添加子节点函数
- */
-function evenClassNodePosition(i, str, attriNode, posiOffset){
-    var tarNodex = attriNode.getBound().left;
-    var tarNodey = attriNode.getBound().top;
-    var id = attriNode.id;
-    if(tarNodey>350){
-    	if(i==0){
-    		var x = tarNodex;
-    	}else{
-    		var x = tarNodex-(i)*15;
-    	}
-        var y = -2.5*x + tarNodey+2.5*tarNodex;
-    }else if(tarNodey<350){
-    	if(i==0){
-        	y = tarNodey-posiOffset[1]+30;
-        	x = (y-tarNodey+2.5*tarNodex)/2.5;
-    	}else{
-    	y = tarNodey-posiOffset[1];
-    	x = (y-tarNodey+2.5*tarNodex)/2.5;
-    	}
-    }
-
-    
-    
-    var id = str+i;
-    var excelnode = excelNode(x-55, y, str, id);//画节点
-    excelnode.layout = {type: 'tree'};
-    if(y>350){
-    	var lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, 0, 0, -30, 10, 40, 10]);
-    }else{
-    	lineLink = new JTopo.FlexionalLink(attriNode, excelnode, null, [-15, 0, -15, 0, -30, -10, 27, -10]);
-    }
-    
-    lineLink.direction = 'horizontal' || 'horizontal';
-    scene.add(excelnode);
-    scene.add(lineLink);
-    return excelnode;
-}
-
-/**
- *奇数级添加子节点函数
- */
-function oddClassNodePosition(num, str, parentNode, posiOffset){
-    var childNode = new JTopo.Node(str);
-    var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
-    var y = parentNode.getBound().top;
-    if(y>350){//当前节点在鱼骨下方
-        var coeff = y+2.5*x-20;
-        xChild = (coeff-y)/2.5-50*num;
-    }else{
-//        coeff = y-2.5*x+180;
-//        xChild = (coeff-y)/(-2.5)-50*num;
-        xChild = x-posiOffset[0]+20;
-        
-    }
-    
-    if(y>350){
-    	var yChild = y+40;
-    }else{
-    	var yChild = y-40;
-    }
-    childNode.id = str+num;
-    childNode.setLocation(xChild+15, yChild);
-    childNode.fontColor = "0,0,0";
-
-    childNode.fillColor = "255,255,255";
-    childNode.font = 'blod 14px 微软雅黑';
-    // childNode.dragable = false;
-    if(yChild>350){
-        childNode.textOffsetY =-15;
-        childNode.rotate = -1.2;
-        var slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, 10, -10, 10, -23, 22, 0, -28]);
-    }else{
-        childNode.textOffsetY =-23;
-        childNode.rotate = 1.2;
-        slashLink = new JTopo.FlexionalLink(parentNode, childNode, null, [10, -10, -10, -10, -23, -22, 0, 32]);
-    }
-
-    childNode.setSize(30, 10);
-    scene.add(childNode);
-
-    slashLink.direction = 'horizontal' || 'horizontal';
-    scene.add(slashLink);
-    return childNode;
-}
-
 
 /**
  * 超过四个节点换行函数
