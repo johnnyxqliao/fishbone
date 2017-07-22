@@ -1,7 +1,6 @@
 function init(data) {
-//	for()
 	var nodes = [{
-	    'name': '鱼骨图',
+	    'name': data[0][0],
 	    'children': [],
 
 	}];
