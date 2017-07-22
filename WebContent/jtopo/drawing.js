@@ -112,7 +112,7 @@ function process_wb(wb) {
     }, this);
     excelData = init(arr);
 
-    cal(excelData.children[5], true, bigMeasure, [0,0]);
+    cal(excelData.children[5], true, bigMeasure);
 //    drawSecThirClaNode ("测量",  bigMeasure);
 //    drawSecThirClaNode ("环境",  bigEnvironment);
 //    drawSecThirClaNode ("方法",  bigMethod);
@@ -127,39 +127,48 @@ function process_wb(wb) {
 /**
  * 遍历json
  */
-var verX = 25;//斜节点补偿
+var verX = 40;//斜节点所占补偿矩形的长和宽
 var verY = 40;
 
-var horiX = 50;//水平节点补偿
-var horiY = 15;
-function cal(jsonNode, direction, rootNode, offset){
-//	if(jsonNode.children.length<1) return;
-	var nextNode = null;
-	
+var horiX = 15;//水平节点所占补偿矩形的长和宽
+var horiY = 40;
+var nextNode = null;
+
+function cal(jsonNode, direction, rootNode){
+	if(jsonNode.children.length<1) return;
 	jsonNode.children.forEach(function(value, index, array){
 		if(direction){//水平放置
-			value['x'] = horiX+offset[0];//计算横坐标补偿
-			value['y'] = horiY+offset[1];
-			var nextNode = drawHori(rootNode, value, direction, index);
-			if(array.length==index+1){//水平节点放置完成后，计算对下一级节点的补偿
-				offset[0] = (index+1)*verX;
-				offset[1] = verY;
+			if(rootNode.endx==undefined){//将斜节点的补偿传入水平节点
+				rootNode['offsetx'] = horiX;//计算横坐标补偿
+				rootNode['offsety'] = horiY;
+				rootNode['endx'] = 0;//计算横坐标补偿
+			    rootNode['endy'] = 0;
+			}
+			horiOffsetNum = hori(value.children.length);
+			rootNode = drawHori(rootNode, value, direction, index);
+			if(value.children.length<1 && array.length==(index+1)){
+				rootNode['endx'] = 70+index*horiX+horiOffsetNum[0]*verX;//结束当前倾斜节点，跳转到上一级水平节点补偿
+				rootNode['endy'] = (index+1)*horiY+horiOffsetNum[1]*verY;
 			}
 		}else{//倾斜放置
-			 value['x'] = verX+offset[0];//计算横坐标补偿
-			 value['y'] = verY+offset[1];
-			 var nextNode = drawVer(rootNode, value, direction, index);
-				if(array.length==index+1){//斜节点放置完成后，计算对下一级节点的补偿
-					offset[0] = (index+1)*verX;
-					offset[1] = verY;
-				}
+			if(index==0) nextNode = rootNode;
+			rootNode['offsetx'] = verX;//计算横坐标补偿
+			rootNode['offsety'] = verY;
+			if(rootNode.endx==undefined){
+				rootNode['endx'] = 0;//计算横坐标补偿
+			    rootNode['endy'] = 0;
+			}
+			
+			rootNode = drawVer(rootNode, value, direction, index);
+			if(value.children.length<1 && array.length==(index+1)){//斜节点的最后一个
+				rootNode = nextNode ;
+				rootNode['endx'] = (index+1)*verX;//结束当前倾斜节点，跳转到上一级水平节点补偿
+				rootNode['endy'] = verY;
+			}
 		}
-		cal(value, !direction, nextNode, offset);
-
+		cal(value, !direction, rootNode);
 	}, this);
-	offset = [0, 0];//每执行一次，将补偿归零
 }
-
 
 /**
  * 绘制水平节点
@@ -169,11 +178,16 @@ function drawHori(attriNode, curNode, direction, index){
 	    var tarNodey = attriNode.getBound().top;
 	    var id = attriNode.id;
 	    //计算横纵坐标
-	    	y = tarNodey-index*50-curNode.y;
-	    	x = (y+2.5*tarNodex-tarNodey)/2.5;
+	    	if(index==0){//首次添加水平节点，横纵坐标直接由目标节点位置确定
+	    		var x = tarNodex-70;
+	    		var y = tarNodey-20;
+	    	}else{//正常添加水平节点，按照水平节点矩形补偿进行添加
+	    		var x = tarNodex-attriNode.offsetx+0.6*attriNode.endy;
+	    		var y = tarNodey-attriNode.offsety-attriNode.endy;
+	    	}
 	    	
 	    var id = curNode.name;
-	    var excelnode = excelNode(x-60, y, curNode.name, id);//画节点
+	    var excelnode = excelNode(x, y, curNode.name, id);//画节点
 	    excelnode.layout = {type: 'tree'};
 	    
 	    var lineLink = drawLine(direction, excelnode);//绘制线上方的横线
@@ -190,14 +204,15 @@ function drawVer(parentNode, curNode, direction, index){
     var childNode = new JTopo.Node(curNode.name);
     var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
     var y = parentNode.getBound().top;
-//计算x坐标
-    xChild = x-60*index-curNode.x;
-//计算y坐标
-    if(y>350){
-	     var yChild = y+curNode.y;
-    }else{
-	     var yChild = y-curNode.y;
-         }
+
+    	if(index==0){
+    		var xChild = x-25;
+    		var yChild = y-40;//首次添加斜节点
+    	}else{
+    		var xChild = x-parentNode.offsetx-parentNode.endx;
+    		var yChild = y;//正常添加斜节点
+    	}
+
 
     childNode.id = curNode.name;
     childNode.setLocation(xChild, yChild);
@@ -257,6 +272,19 @@ function drawLine(direction, lineNode){
 }
 
 /**
+ * 计算水平节点的补偿量
+ */
+var horiOffArr = [];
+var verNum = 0;
+function hori(num){//计算斜节点的长和宽
+	horiOffArr.push(num);
+	if(num!=0){
+		verNum +=1;
+	}
+	return [verNum, Math.max.apply( Math, horiOffArr)];
+}
+
+/**
  * 新建树节点对象函数
  */
 function newTreeNode(id, fontCla, name, num){
@@ -278,25 +306,19 @@ function newTreeNode(id, fontCla, name, num){
 
 
 /**
- * 检测节点添加次数
+ * 判断当前层子节点最多个数
  */
-function testNodeNum(testNode){
-	var addNum = storeArr.indexOf(testNode);
-	if(addNum<0){
-		storeArr.push(testNode);
-		storeArr.push(0);
-		return storeArr.length-2;
-	}else{
-		return addNum;
-	}
+var judgeArr = [];
+function judgeNum(testNode){
+	judgeArr.push(testNode.children.length);
+	return Math.max.apply( Math, judgeArr );
 }
 
 /**
  * 字符串判断是否为空
  */
 
-function isNull(arr){
-    var str = excelData[arr[0]].split(",")[arr[1]];
+function isNull(str){
     var num = 1;
     var num1 = 1;
     if(str.length == 0){
