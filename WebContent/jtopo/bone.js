@@ -45,7 +45,7 @@ fishBrain.fillColor = '255,222,173';//边框颜色
 fishBrain.layout = {type: 'tree'}
 scene.add(fishBrain);
 var aa = fishBrain.getBound();
-console.log(aa);
+//console.log(aa);
 
 /**
  * 绘制鱼身函数
@@ -134,5 +134,7 @@ environmentNodeLink[0];
 var measureNodeLink= IniLine(750, 350, 610, 95, "测量");
 var measureNode = measureNodeLink[2];
 var bigMeasure = measureNodeLink[1];
+bigMeasure['endx']=0;
+bigMeasure['endy']=0;
 measureNodeLink[0];
 

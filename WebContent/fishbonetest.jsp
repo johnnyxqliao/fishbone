@@ -9,13 +9,12 @@
 <!--  导入css -->
 
         <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css"/>
-        <link rel="stylesheet" href="assets/css/bootstrap-responsive.min.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css"/>
         <link rel="stylesheet" href="css/uploadButton.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/font.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/ace.min.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/ace-responsive.min.css" type="text/css"/>
-        <link rel="stylesheet" href="assets/css/ace-skins.min.css" type="text/css"/>
+        
         <link rel="stylesheet" href="./css/canvasAdapt.css" type="text/css" >
         <link rel="stylesheet" href="./css/rightCSS.css" type="text/css"/>
         <link rel="stylesheet" href="./css/text.css" type="text/css"/>
@@ -44,9 +43,7 @@
                 <div class="container-fluid">
                     <a href="#" class="brand">
                         <small>
-                            <i class="icon-leaf"></i>
-                                                                     欢迎使用鱼骨图
-						
+                                         小微企业多创新方法融合与集成应用平台   创新管理平台                            
                         </small>
                     </a>
                     <ul class="nav ace-nav pull-right">
@@ -167,18 +164,8 @@
     <script type="text/javascript" src="js/tree/jquery.ztree.exedit.js"></script>
     <script type="text/javascript" src="jtopo/bone.js"></script>
     <script type="text/javascript" src="jtopo/drawing.js"></script>    
-    <script type="text/javascript" src="jtopo/tree.js"></script>    
-    <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="assets/js/jquery.ui.touch-punch.min.js"></script>
-    <script src="assets/js/jquery.slimscroll.min.js"></script>
-    <script src="assets/js/jquery.easy-pie-chart.min.js"></script>
-    <script src="assets/js/jquery.sparkline.min.js"></script>
-    <script src="assets/js/flot/jquery.flot.min.js"></script>
-    <script src="assets/js/flot/jquery.flot.pie.min.js"></script>
-    <script src="assets/js/flot/jquery.flot.resize.min.js"></script>
-    <script src="assets/js/ace-elements.min.js"></script>
-    <script src="assets/js/ace.min.js"></script>
+    <script type="text/javascript" src="jtopo/tree.js"></script>  
+    <script type="text/javascript" src="jtopo/csvConvertJson.js"></script>      
     <script type="text/javascript" src="./jtopo/canvasAdapt.js"></script>
     </body>
 </html>
