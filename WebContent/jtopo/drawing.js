@@ -133,37 +133,44 @@ var verY = 40;
 var horiX = 15;//水平节点所占补偿矩形的长和宽
 var horiY = 40;
 var nextNode = null;
+var nextRootNode = [];
 
 function cal(jsonNode, direction, rootNode){
-	if(jsonNode.children.length<1) return;
 	jsonNode.children.forEach(function(value, index, array){
 		if(direction){//水平放置
 			if(rootNode.endx==undefined){//将斜节点的补偿传入水平节点
-				rootNode['offsetx'] = horiX;//计算横坐标补偿
-				rootNode['offsety'] = horiY;
 				rootNode['endx'] = 0;//计算横坐标补偿
 			    rootNode['endy'] = 0;
 			}
-			horiOffsetNum = hori(value.children.length);
+			horiOffsetNum = hori(value.children.length, []);
 			rootNode = drawHori(rootNode, value, direction, index);
+			value['node'] = rootNode;
+			if(index==0) nextRootNode.push(rootNode);
 			if(value.children.length<1 && array.length==(index+1)){
-				rootNode['endx'] = 70+index*horiX+horiOffsetNum[0]*verX;//结束当前倾斜节点，跳转到上一级水平节点补偿
-				rootNode['endy'] = (index+1)*horiY+horiOffsetNum[1]*verY;
+				rootNode = value.parent.node ;
+				rootNode['endx'] += 70+index*horiX+horiOffsetNum[0]*verX;//结束当前倾斜节点，跳转到上一级水平节点补偿
+				rootNode['endy'] += (index+1)*horiY+horiOffsetNum[1]*verY;
+				var arrayNode = nextNodeUpdate(array, [0, 0]);
+				rootNode['endx'] = arrayNode[0];//结束当前倾斜节点，跳转到上一级水平节点补偿
+				rootNode['endy'] = arrayNode[1];
+				fatherNodeUpdate(value.parent);
 			}
 		}else{//倾斜放置
-			if(index==0) nextNode = rootNode;
-			rootNode['offsetx'] = verX;//计算横坐标补偿
-			rootNode['offsety'] = verY;
 			if(rootNode.endx==undefined){
 				rootNode['endx'] = 0;//计算横坐标补偿
 			    rootNode['endy'] = 0;
 			}
-			
 			rootNode = drawVer(rootNode, value, direction, index);
+			value['node'] = rootNode;
+			if(index==0) nextRootNode.push(rootNode);
 			if(value.children.length<1 && array.length==(index+1)){//斜节点的最后一个
-				rootNode = nextNode ;
+				rootNode = value.parent.node ;
 				rootNode['endx'] = (index+1)*verX;//结束当前倾斜节点，跳转到上一级水平节点补偿
 				rootNode['endy'] = verY;
+				var arrayNode = nextNodeUpdate(array, [0, 0]);
+				rootNode['endx'] = arrayNode[0];//结束当前倾斜节点，跳转到上一级水平节点补偿
+				rootNode['endy'] = arrayNode[1];
+				fatherNodeUpdate(value.parent);
 			}
 		}
 		cal(value, !direction, rootNode);
@@ -182,8 +189,8 @@ function drawHori(attriNode, curNode, direction, index){
 	    		var x = tarNodex-70;
 	    		var y = tarNodey-20;
 	    	}else{//正常添加水平节点，按照水平节点矩形补偿进行添加
-	    		var x = tarNodex-attriNode.offsetx+0.6*attriNode.endy;
-	    		var y = tarNodey-attriNode.offsety-attriNode.endy;
+	    		var x = tarNodex-horiX+0.6*attriNode.endy;
+	    		var y = tarNodey-horiY-attriNode.endy;
 	    	}
 	    	
 	    var id = curNode.name;
@@ -207,9 +214,9 @@ function drawVer(parentNode, curNode, direction, index){
 
     	if(index==0){
     		var xChild = x-25;
-    		var yChild = y-40;//首次添加斜节点
+    		var yChild = y-40;//首次添加斜节点，直接由根节点确定水平节点放置位置
     	}else{
-    		var xChild = x-parentNode.offsetx-parentNode.endx;
+    		var xChild = x-verX-parentNode.endx;
     		var yChild = y;//正常添加斜节点
     	}
 
@@ -274,15 +281,42 @@ function drawLine(direction, lineNode){
 /**
  * 计算水平节点的补偿量
  */
-var horiOffArr = [];
 var verNum = 0;
-function hori(num){//计算斜节点的长和宽
+function hori(num, horiOffArr){//计算斜节点的长和宽
 	horiOffArr.push(num);
 	if(num!=0){
 		verNum +=1;
 	}
 	return [verNum, Math.max.apply( Math, horiOffArr)];
 }
+
+/**
+ * 父节点更新
+ */
+function fatherNodeUpdate(currentNode){
+	if(currentNode.parent.children.length!=1) return;
+	if(currentNode.parent.children.length==1){
+		currentNode.parent.node.endx +=currentNode.node.endx;
+		currentNode.parent.node.endy +=currentNode.node.endy;
+		return fatherNodeUpdate(currentNode.parent);
+	}
+}
+
+
+/**
+ * 父节点更新
+ */
+function nextNodeUpdate(arrayNode, nodeUpdate){
+//	var nodeUpdatex = 0;
+//	var nodeUpdatey = 0;
+	arrayNode.forEach(function(element,dex,array){
+		nodeUpdate[0] = element.node.endx;
+		nodeUpdate[1] = element.node.endy;
+	},this)
+	return nodeUpdate;
+}
+
+
 
 /**
  * 新建树节点对象函数
