@@ -132,13 +132,12 @@ var verY = 40;
 
 var horiX = 15;//水平节点所占补偿矩形的长和宽
 var horiY = 40;
-var nextNode = null;
-var nextRootNode = [];
 
 function cal(jsonNode, direction, rootNode){
+//	console.log(jsonNode);
 	jsonNode.children.forEach(function(value, index, array){
+		value = addNull(value);
 		if(direction){//水平放置
-			console.log(value.name);
 			rootNode = drawHori(rootNode, value, direction, index);
 			value['node'] = rootNode;
 			if(value.children.length<1){//水平节点最后一层
@@ -150,7 +149,6 @@ function cal(jsonNode, direction, rootNode){
 				value.parent.node.endy += horiNodeOffset[1];
 			}
 		}else{//倾斜放置
-			console.log(value.name);
 			rootNode = drawVer(rootNode, value, direction, index);
 			value['node'] = rootNode;
 			if(value.children.length<1){//斜节点最后一层
@@ -170,9 +168,9 @@ function cal(jsonNode, direction, rootNode){
  * 绘制水平节点
  */
 function drawHori(attriNode, curNode, direction, index){
+	    
 	    var tarNodex = attriNode.getBound().left;
 	    var tarNodey = attriNode.getBound().top;
-	    var id = attriNode.id;
 	    //计算横纵坐标
 	    	if(index==0){//首次添加水平节点，横纵坐标直接由目标节点位置确定
 	    		var x = tarNodex-70;
@@ -185,12 +183,23 @@ function drawHori(attriNode, curNode, direction, index){
 	    var id = curNode.name;
 	    var excelnode = excelNode(x, y, curNode.name, id);//画节点
 	    excelnode.layout = {type: 'tree'};
-	    excelnode['endx'] = horiX;//计算横坐标补偿
-	    excelnode['endy'] = horiY;
+	    if(curNode.name==='/n**'){
+	    	excelnode['endx'] = 0;//计算横坐标补偿
+		    excelnode['endy'] = 0;
+	    }else{
+	    	excelnode['endx'] = horiX;//计算横坐标补偿
+	        excelnode['endy'] = horiY;
+	    }
+	    
 	    
 	    var lineLink = drawLine(direction, excelnode);//绘制线上方的横线
-	    scene.add(excelnode);
-	    scene.add(lineLink);
+	    if(curNode.name==='/n**'){
+	    	excelnode.visible=false;
+	    	lineLink.alpha=0;
+	    }
+	    	scene.add(excelnode);
+	        scene.add(lineLink);
+	    
 	    return excelnode;
 }
 
@@ -199,6 +208,7 @@ function drawHori(attriNode, curNode, direction, index){
  * 绘制倾斜节点
  */
 function drawVer(parentNode, curNode, direction, index){
+	if(curNode==='/n**') return;
     var childNode = new JTopo.Node(curNode.name);
     var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
     var y = parentNode.getBound().top;
@@ -211,8 +221,14 @@ function drawVer(parentNode, curNode, direction, index){
     		var yChild = y;//正常添加斜节点
     	}
 
-    	childNode['endx'] = verX;//计算横坐标补偿
-    	childNode['endy'] = verY;
+    	if(curNode.name==='/n**'){
+    		childNode['endx'] = 0;//计算横坐标补偿
+        	childNode['endy'] = 0;
+    	}else{
+    		childNode['endx'] = verX;//计算横坐标补偿
+    	    childNode['endy'] = verY;
+    	}
+    	
     childNode.id = curNode.name;
     childNode.setLocation(xChild, yChild);
     childNode.fontColor = "0,0,0";
@@ -230,8 +246,11 @@ function drawVer(parentNode, curNode, direction, index){
     }
 
     childNode.setSize(30, 10);
+    if(curNode.name==='/n**'){
+    	childNode.visible=false;
+    	slashLink.alpha=0;
+    }
     scene.add(childNode);
-
     scene.add(slashLink);
     return childNode;
 }
@@ -250,6 +269,8 @@ function drawLine(direction, lineNode){
 		lineNode2.setLocation(x+55, y-5);
 		lineNode1.setSize(1, 1);
 		lineNode2.setSize(1, 1);
+		lineNode1.visible=false;
+		lineNode2.visible=false;
 		scene.add(lineNode2);
 		scene.add(lineNode1);
 	    var link = new JTopo.Link(lineNode1, lineNode2);
@@ -262,6 +283,8 @@ function drawLine(direction, lineNode){
 		lineNode2.setLocation(x+10, y+32);
 		lineNode1.setSize(1, 1);
 		lineNode2.setSize(1, 1);
+		lineNode1.visible=false;
+		lineNode2.visible=false;
 		scene.add(lineNode2);
 		scene.add(lineNode1);
 	    var link = new JTopo.Link(lineNode1, lineNode2);
@@ -281,7 +304,7 @@ function nodeOffset(nodeArray, direction){
 			sumHoriEndx += element.node.endx;
 			sumHoriEndy += element.node.endy;
 		},this)
-		return [sumHoriEndx, sumHoriEndy];
+		return [sumHoriEndx+horiY, sumHoriEndy];
 	}else{//斜节点补偿
 		sumVeriEndx = 0;
 		sumVeriEndy = 0;
@@ -295,18 +318,34 @@ function nodeOffset(nodeArray, direction){
 	}
 }
 
+/**
+ * 子节点中添加标识元素
+ */
+function addNull(valueArr){
+	var testValue = 0;
+	if(valueArr.name!=="/n**"){
+		valueArr.children.forEach(function(value,index,array){
+		if(value.name==="/n**"){
+			testValue=1;
+		}
+	},this)
+	if(!testValue && valueArr.children.length>1){
+		valueArr.children.push({name:'/n**' ,
+			                    children:[] ,
+			                    parent:valueArr})
+	}
+	}
+	return valueArr;
+}
 
 /**
- * 父节点更新
+ * 在每个子节点添加标识单元
  */
-function fatherNodeUpdate(currentNode){
-	if(currentNode.parent.children.length!=1) return;
-	if(currentNode.parent.children.length==1){
-		currentNode.parent.node.endx +=currentNode.node.endx;
-		currentNode.parent.node.endy +=currentNode.node.endy;
-		return fatherNodeUpdate(currentNode.parent);
-	}
+function addNullUnit(valueArr){
+	
 }
+
+
 
 /**
  * 新建树节点对象函数

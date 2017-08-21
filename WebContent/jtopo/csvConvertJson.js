@@ -2,13 +2,11 @@ function init(data) {
 	var nodes = [{
 	    'name': data[0][0],
 	    'children': [],
-
 	}];
 
 	var p = {
 	    'name': '',
 	    'children': [
-
 	    ]
 	}
 
@@ -30,7 +28,7 @@ function init(data) {
                     current.push(temp);
                 }
             } else {
-                if (element[i] != '' &&element[i]!=undefined) {
+                if (element[i] != '' && element[i]!=undefined) {
  
                     for (var j = 0; j < pre.length; j++) {
                         if (index < pre[j].y) {

@@ -18,6 +18,8 @@
 	    }
 	};
 	
+//	var zNodes = excelData;
+	
 	var zTree, rMenu;
 	$(document).ready(function(){
 	    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
