@@ -131,7 +131,7 @@ function showRMenu(type, x, y) {
 	    var testNum1 = (type.parentTId=="treeDemo_1");
 	    if (testNum0) {
 	        $("#m_del").hide();
-	        $("#m_check").show();
+	        $("#m_check").hide();
 	        $("#m_add").hide();
 	    } else if(testNum1){
 	        $("#m_del").hide();
@@ -276,11 +276,16 @@ function redraw(){
     		break;
     	}
     }
-    drawSecThirClaNode ("测量",  bigMeasure);
-    drawSecThirClaNode ("环境",  bigEnvironment);
-    drawSecThirClaNode ("方法",  bigMethod);
-    drawSecThirClaNode ("材料",  bigMaterial);
-    drawSecThirClaNode ("机器",  bigMachine);
-    drawSecThirClaNode ("人员",  bigMan);
+    excelData.children.forEach(function(value,index,array){
+    	delete value['node'];
+		for(var i=0;i<nodeArr.length;i++){
+			if(value.name===nodeArr[i].text){
+				value['node'] = nodeArr[i];
+				cal(value, true, value.node);
+				mainBoneAdaptSelf(value.node.endx, value.name);
+			}
+		}
+	},this)
+	selfAdapt();
      }
 }

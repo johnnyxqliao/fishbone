@@ -85,6 +85,7 @@ var zNodes =[
 ];
 
 var global_wb;
+var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
 function process_wb(wb) {
     global_wb = wb;
     var output = to_csv(wb);
@@ -92,7 +93,6 @@ function process_wb(wb) {
     //将表格中获取的数据发送到前台界面
     fishBrain.text = excelData[2].split(",")[0];
     zNodes[0].name = fishBrain.text;
-    
     
     var arr = [];
     excelData.forEach(function(value, index, array){
@@ -108,26 +108,33 @@ function process_wb(wb) {
 	zNodes[0].children.splice(6,1);
 	
 	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
-    
-    
-    
-    excelData.children[5]['node'] = bigMeasure;
-    cal(excelData.children[5], true, bigMeasure);
-//    drawSecThirClaNode ("测量",  bigMeasure);
-//    drawSecThirClaNode ("环境",  bigEnvironment);
-//    drawSecThirClaNode ("方法",  bigMethod);
-//    drawSecThirClaNode ("材料",  bigMaterial);
-//    drawSecThirClaNode ("机器",  bigMachine);
-//    drawSecThirClaNode ("人员",  bigMan);
-    
-    
+	
+	excelData.children.forEach(function(value,index,array){
+		for(var i=0;i<nodeArr.length;i++){
+			if(value.name===nodeArr[i].text){
+				value['node'] = nodeArr[i];
+				cal(value, true, value.node);
+				mainBoneAdaptSelf(value.node.endx-150, value.name);
+			}
+		}
+	},this)
+	selfAdapt();
+}
+/*
+ * 更新根节点位置
+ */
+
+function selfAdapt(){
+	[measureNode,environmentNode,methodNode,materialNode,machineNode,manNode].forEach(function(element,index,array){
+	layoutAdaptSelf(element, 20);
+},this)
 }
 
 /**
  * 遍历json
  */
 var verX = 40;//斜节点所占补偿矩形的长和宽
-var verY = 40;
+var verY = 50;
 
 var horiX = 15;//水平节点所占补偿矩形的长和宽
 var horiY = 40;
@@ -170,17 +177,27 @@ function drawHori(attriNode, curNode, direction, index){
 	    var tarNodex = attriNode.getBound().left;
 	    var tarNodey = attriNode.getBound().top;
 	    //计算横纵坐标
+	    if(tarNodey<350){//在鱼骨上方
 	    	if(index==0){//首次添加水平节点，横纵坐标直接由目标节点位置确定
 	    		var x = tarNodex-70;
 	    		var y = tarNodey-20;
 	    	}else{//正常添加水平节点，按照水平节/点矩形补偿进行添加
-	    		var x = tarNodex-horiX;//水平节点的横坐标比上一级小固定值
+	    		var x = tarNodex-attriNode.endy*23/55;//水平节点的横坐标比上一级小固定值
 	    		var y = tarNodey-attriNode.endy;
 	    	}
+	    }else{//在鱼骨下方
+	    	if(index==0){//首次添加水平节点，横纵坐标直接由目标节点位置确定
+	    		var x = tarNodex-70;
+	    		var y = tarNodey+20;
+	    	}else{//正常添加水平节点，按照水平节/点矩形补偿进行添加
+	    		var x = tarNodex-attriNode.endy*23/55;//水平节点的横坐标比上一级小固定值
+	    		var y = tarNodey+attriNode.endy;
+	    	}
+	    }
 	    	
 	    var id = curNode.name;
 	    var excelnode = excelNode(x, y, curNode.name, id);//画节点
-	    excelnode.layout = {type: 'tree'};
+//	    excelnode.layout = {type: 'tree'};
 	    if(curNode.name==='/n**'){
 	    	excelnode['endx'] = 0;//计算横坐标补偿
 		    excelnode['endy'] = 0;
@@ -189,8 +206,7 @@ function drawHori(attriNode, curNode, direction, index){
 	        excelnode['endy'] = horiY;
 	    }
 	    
-	    
-	    var lineLink = drawLine(direction, excelnode);//绘制线上方的横线
+	    var lineLink = drawHoriLine(attriNode, excelnode, index);//绘制线上方的横线
 	    if(curNode.name==='/n**'){
 	    	excelnode.visible=false;
 	    	lineLink.alpha=0;
@@ -201,7 +217,6 @@ function drawHori(attriNode, curNode, direction, index){
 	    return excelnode;
 }
 
-
 /**
  * 绘制倾斜节点
  */
@@ -210,7 +225,8 @@ function drawVer(parentNode, curNode, direction, index){
     var childNode = new JTopo.Node(curNode.name);
     var x = parentNode.getBound().left;//获取当前节点的横纵坐标以及id信息
     var y = parentNode.getBound().top;
-
+    
+    if(y<350){//鱼骨上方
     	if(index==0){
     		var xChild = x-25;
     		var yChild = y-40;//首次添加斜节点，直接由根节点确定水平节点放置位置
@@ -218,6 +234,15 @@ function drawVer(parentNode, curNode, direction, index){
     		var xChild = x-parentNode.endx;
     		var yChild = y;//正常添加斜节点
     	}
+    }else{//鱼骨下方
+    	if(index==0){
+    		var xChild = x-25;
+    		var yChild = y+40;//首次添加斜节点，直接由根节点确定水平节点放置位置
+    	}else{
+    		var xChild = x-parentNode.endx;
+    		var yChild = y;//正常添加斜节点
+    	}
+    }
 
     	if(curNode.name==='/n**'){
     		childNode['endx'] = 0;//计算横坐标补偿
@@ -236,11 +261,11 @@ function drawVer(parentNode, curNode, direction, index){
     if(yChild>350){
         childNode.textOffsetY =-15;
         childNode.rotate = -1.2;
-        var slashLink = drawLine(direction, excelnode);//绘制线上方的横线
+        var slashLink = drawVerLine(parentNode, childNode, index);//绘制线上方的横线
     }else{
         childNode.textOffsetY =-23;
         childNode.rotate = 1.2;
-        var slashLink = drawLine(direction, childNode);//绘制线上方的横线
+        var slashLink = drawVerLine(parentNode, childNode, index);//绘制线上方的横线
     }
 
     childNode.setSize(30, 10);
@@ -252,7 +277,59 @@ function drawVer(parentNode, curNode, direction, index){
     scene.add(slashLink);
     return childNode;
 }
+/*
+ * 绘制水平节点连线
+ */
+function drawHoriLine(rootNode, subNode, index){
+	
+	if(rootNode.getBound().top<350){
+		if(index==0){
+		var lineLink = new JTopo.FlexionalLink(rootNode, subNode, null, [-23, -25, -23, -25,
+			                                                              -35, -12.5, 35, -12.5]);
+	}else{
+		var lineLink = new JTopo.FlexionalLink(rootNode, subNode, null, [35, -12.5, 35, -12.5, 
+			                                                              -35, -12.5, 35, -12.5]);
+	}
+	}else{
+		if(index==0){
+			var lineLink = new JTopo.FlexionalLink(rootNode, subNode, null, [-23, 25, -23, 25,
+				                                                              -35, 12.5, 34, 12.5]);
+		}else{
+			var lineLink = new JTopo.FlexionalLink(rootNode, subNode, null, [35, 12.5, 34, 12.5, 
+				                                                              -35, 12.5, 34, 12.5]);
+		}
+	}
+	
+	lineLink.direction = 'horizontal' || 'horizontal';
+	return lineLink;
+}
 
+/*
+ * 绘制倾斜节点连线
+ */
+function drawVerLine(rootNode, subNode, index){
+	
+	if(rootNode.getBound().top<350){//鱼骨上方
+		if(index==0){//首次添加斜节点
+		var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [20, -12.5, -35, -12.5,
+			                                                               -16.8, -10, -16.8, -10]);
+	}else{//正常添加斜节点
+		var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [-23, -25, 0, 30, 
+			                                                               -23, -25, 0, 30]);
+	}
+	}else{//鱼骨下方
+		if(index==0){//首次添加斜节点
+			var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [20, 12.5, -40, 12.5,
+				                                                               -10, -10, -10, -10]);
+		}else{//正常添加斜节点
+			var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [-23, 25, -5, -25, 
+				                                                               -23, 25, -5, -25]);
+		}
+	}
+	
+	slashLink.direction = 'horizontal' || 'horizontal';
+	return slashLink;
+}
 
 /**
  * 绘制文字上方或者下方线
@@ -304,7 +381,7 @@ function nodeOffset(nodeArray, direction){
 			}
 			sumHoriEndy += element.node.endy;
 		},this)
-		return [sumHoriEndx+horiY+nodeArray.length*horiX, sumHoriEndy];
+		return [sumHoriEndx+nodeArray.length*horiX, sumHoriEndy];
 	}else{//斜节点补偿
 		sumVeriEndx = 0;
 		sumVeriEndy = 0;
@@ -339,60 +416,20 @@ function addNull(valueArr){
 }
 
 /**
- * 新建树节点对象函数
- */
-function newTreeNode(id, fontCla, name, num){
-	var strId = null;
-	var strpId = null;
-	var nodePosi = null;
-	for(i=0; i<zNodes.length; i++){
-		if(zNodes[i].name === fontCla){
-			strId = zNodes[i].id;
-			strpId =zNodes[i].pId;
-			nodePosi = i+1;
-			break;
-		};
-	}
-	if(num<0) num=0;
-	var newTreeNode = {id:strId.toString()+id.toString(), pId:strId, name:name};
-	zNodes.splice(nodePosi+id+num, 0 , newTreeNode);
-}
-
-
-/**
- * 字符串判断是否为空
- */
-
-function isNull(str){
-    var num = 1;
-    var num1 = 1;
-    if(str.length == 0){
-        num = 0;
-    }
-    if(str.replace(/(^\s*)|(\s*$)/g, "").length ==0){
-        num1 = 0;
-    }
-    return num+num1;
-}
-
-/**
  * 主骨自适应函数
  */
-function mainBoneAdaptSelf(num, upperBone){
-    var criNum = num-120;
-    if(criNum>0){
-        if(upperBone.id==="测量"){
-            layoutAdaptSelf(methodNode, criNum);
-            layoutAdaptSelf(machineNode, criNum);
-        }else if(upperBone.id==="环境"){
-            layoutAdaptSelf(materialNode, criNum);
-            layoutAdaptSelf(manNode, criNum);
-        }else if(upperBone.id==="方法"){
-            layoutAdaptSelf(machineNode, criNum);
-        }else if(upperBone.id==="材料"){
-            layoutAdaptSelf(manNode, criNum);
+function mainBoneAdaptSelf(selfOffset, upperBone){
+        if(upperBone==="测量"){
+            layoutAdaptSelf(methodNode, selfOffset);
+            layoutAdaptSelf(machineNode, selfOffset);
+        }else if(upperBone==="环境"){
+            layoutAdaptSelf(materialNode, selfOffset);
+            layoutAdaptSelf(manNode, selfOffset);
+        }else if(upperBone==="方法"){
+            layoutAdaptSelf(machineNode, selfOffset);
+        }else if(upperBone==="材料"){
+            layoutAdaptSelf(manNode, selfOffset);
         }
-    }
 }
 
 /**
@@ -403,7 +440,6 @@ function layoutAdaptSelf(layoutNode, criNum){
         y:layoutNode.y};
     return JTopo.layout.layoutNode(scene, layoutNode.setLocation(layoutNode.x-criNum, layoutNode.y), oldNode);
 }
-
 
 /**
  * 定义从excel中读取数据，并向画布中添加节点函数
@@ -444,7 +480,6 @@ function lineFeed(string){
     console.log(String);
     return String;
 }
-
 
 /**
  *读取excel内容函数的主函数入口

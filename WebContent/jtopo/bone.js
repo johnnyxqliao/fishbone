@@ -91,6 +91,8 @@ function IniLine(x1, y1, x2, y2, text){
     subNode.borderRadius = 10;// 圆角
     subNode.borderWidth = 2;// 边框的宽度
     subNode.fillColor = '0,191,255';//填充颜色
+    subNode['endx'] = 0;
+    subNode['endy'] = 0;
     // subNode.dragable = false;
     scene.add(subNode);
     //连线
@@ -134,7 +136,5 @@ environmentNodeLink[0];
 var measureNodeLink= IniLine(750, 350, 610, 95, "测量");
 var measureNode = measureNodeLink[2];
 var bigMeasure = measureNodeLink[1];
-bigMeasure['endx']=0;
-bigMeasure['endy']=0;
 measureNodeLink[0];
 

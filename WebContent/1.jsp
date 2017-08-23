@@ -25,13 +25,11 @@
     scene.add(cloudNode);
     
     var tree1 = new JTopo.Node("tree1");   
-/*     tree1.rotate =Math.PI/3; */
     tree1.setSize(35, 20);
     tree1.setLocation(200, 380);
     scene.add(tree1);
     
     var tree2 = new JTopo.Node("tree2");
-/*     tree2.rotate =1.2; */
     tree2.setSize(20, 20);
     tree2.setLocation(300, 460);
     scene.add(tree2);
@@ -42,21 +40,22 @@
     
      var link = new JTopo.FlexionalLink(tree1, tree2, null, [0,0,0,0,10,15,-10,15]);
     link.direction = 'horizontal' || 'horizontal';
-//    link.offsetGap = 10;
 
 
 
-    var tree3 = new JTopo.Node("test1");
-    /*     tree1.rotate =Math.PI/3; */
+    var tree3 = new JTopo.Node("test3");
     tree3.setSize(20, 20);
     tree3.setLocation(400, 200);
     scene.add(tree3);
 
-    var tree4 = new JTopo.Node("test2");
-    /*     tree2.rotate =1.2; */
+    var tree4 = new JTopo.Node("test4");
     tree4.setSize(20, 20);
-    tree4.setLocation(400, 200);
+    tree4.setLocation(600, 500);
     scene.add(tree4);
+    
+    var slashLink = new JTopo.FlexionalLink(tree3, tree4, null, [10, 10, -10, 10, -10, 10, 2, -22]);
+    slashLink.direction = 'horizontal' || 'horizontal';
+    scene.add(slashLink);
 
 function node(x, y) {
     var testnode = new JTopo.Node();
