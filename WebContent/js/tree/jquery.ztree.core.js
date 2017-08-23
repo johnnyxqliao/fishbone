@@ -834,7 +834,9 @@
                 if (obj === null) return null;
                 var o = tools.isArray(obj) ? [] : {};
                 for (var i in obj) {
-                    o[i] = (obj[i] instanceof Date) ? new Date(obj[i].getTime()) : (typeof obj[i] === "object" ? tools.clone(obj[i]) : obj[i]);
+                	if(i!=='parent' && i!=='y' && i!=='undefined'){
+                		o[i] = (obj[i] instanceof Date) ? new Date(obj[i].getTime()) : (typeof obj[i] === "object" ? tools.clone(obj[i]) : obj[i]);
+                	}
                 }
                 return o;
             },

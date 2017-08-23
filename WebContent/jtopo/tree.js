@@ -4,11 +4,11 @@
 
 	var setting = {
 	    view: {
-	        dblClickExpand: false
+	        dblClickExpand: true
 	    },
 	    data: {
 	        simpleData: {
-	            enable: true
+	            enable:true
 	        }
 	    },
 	    callback: {
@@ -18,7 +18,6 @@
 	    }
 	};
 	
-//	var zNodes = excelData;
 	
 	var zTree, rMenu;
 	$(document).ready(function(){
@@ -121,22 +120,22 @@ function OnRightClick(event, treeId, treeNode) {
 	        showRMenu("root", event.clientX, event.clientY);
 	    } else if (treeNode && !treeNode.noR) {
 	        zTree.selectNode(treeNode);
-	        showRMenu(treeNode, event.clientX, event.clientY);
+	        showRMenu(treeNode, event.clientX+20, event.clientY+32);
 	    }
 	}
 
 //右键展开菜单
 function showRMenu(type, x, y) {
 	    $("#rMenu ul").show();
-	    var testNum0 = (type.id=="1");
-	    var testNum1 = (type.id=="1"||type.id=="11"||type.id=="12"||type.id=="13"||type.id=="14"||type.id=="15"||type.id=="16");
+	    var testNum0 = (type.tId=="treeDemo_1");
+	    var testNum1 = (type.parentTId=="treeDemo_1");
 	    if (testNum0) {
 	        $("#m_del").hide();
 	        $("#m_check").show();
 	        $("#m_add").hide();
 	    } else if(testNum1){
 	        $("#m_del").hide();
-	        $("#m_check").show();
+	        $("#m_check").hide();
 	        $("#m_add").show();
 	    }else{
 	    	$("#m_del").show();
@@ -204,20 +203,7 @@ function hideRMenu() {
  * 添加节点更新数组
  */
 	function renewAddCsv(curNode, newName){
-		var addNode = [];
-		for(i=0; i<excelData.length; i++){
-			var length = excelData[i].split(",").length;
-			for(j=0; j<length; j++){
-				if(excelData[i].split(",")[j] === curNode.name){
-					for(m=0; m<length; m++){
-						addNode[m] = "";//定义一个数组对象
-					}
-					addNode[j+1] = newName;
-					excelData.splice(i+1, 0 ,addNode.join(","));
-					break;
-				}
-			}
-		}
+		traverArr(excelData, curNode, 'add', newName);
 	}
 	
 /**
@@ -225,20 +211,7 @@ function hideRMenu() {
  */	
 	
 	function renewModifyCsv(curNode, newName){
-		var addNode = [];
-		for(i=0; i<excelData.length; i++){
-			var length = excelData[i].split(",").length;
-					for(j=0; j<length; j++){
-			if(excelData[i].split(",")[j] === curNode.name){
-				for(m=0; m<length; m++){
-					addNode[m] = "";//定义一个数组对象
-				}
-				addNode[j] = newName;
-				excelData.splice(i, 1 ,addNode.join(","));
-				break;
-			}
-					}
-		}
+		traverArr(excelData, curNode, 'rename', newName);
 	}
 
 		
@@ -247,16 +220,35 @@ function hideRMenu() {
  * 删除节点更新数组
  */		
 	function renewDeleteCsv(curNode){
-		for(i=0; i<excelData.length; i++){
-			var length = excelData[i].split(",").length;
-			for(j=0; j<length; j++){
-				if(excelData[i].split(",")[j] === curNode.name){
-					excelData.splice(i, curNode.children.length+1);
-					break;
+		traverArr(excelData, curNode, 'delete',null);
+	}
+	
+	
+/*
+ * 遍历数组
+ */
+	function traverArr(excelData, curNode, edit, newName){
+		excelData.children.forEach(function(element,index,array){
+			if(edit==='delete'){//删除操作
+				if(element.name===curNode.name){
+					element.parent.children.splice(index, 1);
+					return;
+				}
+			}else if(edit==='rename'){//重命名操作
+				if(element.name===curNode.name){
+					element.name=newName;
+					return;
+				}
+			}else if(edit==='add'){//添加操作
+				if(element.name===curNode.name){
+					element.children.push({name:newName,children:[],parent:element});
+					return;
 				}
 			}
-		}
+			traverArr(element, curNode, edit, newName);
+		},this);
 	}
+	
 	
 /**
  *重新绘制图象

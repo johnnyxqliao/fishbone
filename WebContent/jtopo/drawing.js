@@ -84,15 +84,6 @@ var zNodes =[
     { id:16, pId:1, name:"测量", open:true}
 ];
 
-
-var excelData = ["待解决问题,,,",
-	",人员,,",
-	",机器,,",
-	",材料,,",
-	",方法,,",
-	",环境,,",
-	",测量,,",
-	",,,"];
 var global_wb;
 function process_wb(wb) {
     global_wb = wb;
@@ -111,6 +102,15 @@ function process_wb(wb) {
     	}
     }, this);
     excelData = init(arr);
+    //将导入的表格数据在左侧显示出来
+    excelData['open'] = true;
+	zNodes =[excelData];
+	zNodes[0].children.splice(6,1);
+	
+	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    
+    
+    
     excelData.children[5]['node'] = bigMeasure;
     cal(excelData.children[5], true, bigMeasure);
 //    drawSecThirClaNode ("测量",  bigMeasure);
@@ -120,7 +120,6 @@ function process_wb(wb) {
 //    drawSecThirClaNode ("机器",  bigMachine);
 //    drawSecThirClaNode ("人员",  bigMan);
     
-    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     
 }
 
@@ -134,9 +133,8 @@ var horiX = 15;//水平节点所占补偿矩形的长和宽
 var horiY = 40;
 
 function cal(jsonNode, direction, rootNode){
-//	console.log(jsonNode);
 	jsonNode.children.forEach(function(value, index, array){
-		value = addNull(value);
+		value = addNull(value);//在每个子节点后面添加标识元素
 		if(direction){//水平放置
 			rootNode = drawHori(rootNode, value, direction, index);
 			value['node'] = rootNode;
@@ -301,10 +299,12 @@ function nodeOffset(nodeArray, direction){
 		sumHoriEndx = 0;
 		sumHoriEndy = 0;
 		nodeArray.forEach(function(element,index,array){
-			sumHoriEndx += element.node.endx;
+			if(element.node.endx>sumHoriEndx){
+				sumHoriEndx = element.node.endx;
+			}
 			sumHoriEndy += element.node.endy;
 		},this)
-		return [sumHoriEndx+horiY, sumHoriEndy];
+		return [sumHoriEndx+horiY+nodeArray.length*horiX, sumHoriEndy];
 	}else{//斜节点补偿
 		sumVeriEndx = 0;
 		sumVeriEndy = 0;
@@ -337,15 +337,6 @@ function addNull(valueArr){
 	}
 	return valueArr;
 }
-
-/**
- * 在每个子节点添加标识单元
- */
-function addNullUnit(valueArr){
-	
-}
-
-
 
 /**
  * 新建树节点对象函数
