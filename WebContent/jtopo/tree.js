@@ -169,7 +169,7 @@ function hideRMenu() {
 	    } else {
 	        zTree.addNodes(null, newNode);
 	    }
-	    renewAddCsv(zTree.getSelectedNodes()[0], newNode.name);
+	    traverArr(excelData, zTree.getSelectedNodes()[0], 'add', newNode.name);
 	}
 	
 	function removeTreeNode() {
@@ -185,44 +185,19 @@ function hideRMenu() {
 	            zTree.removeNode(nodes[0]);
 	        }
 	    }
-	    renewDeleteCsv(nodes[0]);
+	    traverArr(excelData, nodes[0], 'delete', null);
 	}
 
 	function updateNode(postionJson){//更新节点-修改节点名称
 	    var nodes = zTree.getSelectedNodes();
 	    var newName = window.prompt("输入新名称",nodes[0].name);
 	    if(newName!=nodes[0].name && newName!=null && newName!=undefined){
-	    	renewModifyCsv(nodes[0], newName);
+	    	traverArr(excelData, nodes[0], 'rename', newName);
 	        nodes[0].name = newName;
 	        zTree.updateNode(nodes[0]);
 	    }
 	    hideRMenu();
 	}
-
-/**
- * 添加节点更新数组
- */
-	function renewAddCsv(curNode, newName){
-		traverArr(excelData, curNode, 'add', newName);
-	}
-	
-/**
- * 修改节点更新数组
- */	
-	
-	function renewModifyCsv(curNode, newName){
-		traverArr(excelData, curNode, 'rename', newName);
-	}
-
-		
-
-/**
- * 删除节点更新数组
- */		
-	function renewDeleteCsv(curNode){
-		traverArr(excelData, curNode, 'delete',null);
-	}
-	
 	
 /*
  * 遍历数组
@@ -241,7 +216,7 @@ function hideRMenu() {
 				}
 			}else if(edit==='add'){//添加操作
 				if(element.name===curNode.name){
-					element.children.push({name:newName,children:[],parent:element});
+					element.children.splice(element.children.length-1, 0, {name:newName,children:[],parent:element});
 					return;
 				}
 			}
@@ -267,7 +242,7 @@ function redraw(){
 	$("#canvas").attr("height", height);
 	}
 	resizeCanvas();
-	
+	//加载鱼骨图基础骨架
 	var head = $("body").remove("script[role='reload']");  
     $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
     for(i=0; i<excelData.length; i++){
@@ -276,16 +251,17 @@ function redraw(){
     		break;
     	}
     }
-    excelData.children.forEach(function(value,index,array){
-    	delete value['node'];
-		for(var i=0;i<nodeArr.length;i++){
-			if(value.name===nodeArr[i].text){
+    //根据当前的数据重绘鱼骨图
+	var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
+	for(var i=0;i<nodeArr.length;i++){
+		excelData.children.forEach(function(value,index,array){
+			if(nodeArr[i].text===value.name){
 				value['node'] = nodeArr[i];
 				cal(value, true, value.node);
-				mainBoneAdaptSelf(value.node.endx, value.name);
+				mainBoneAdaptSelf(value.node.endx-150, value.name);
 			}
-		}
-	},this)
+		},this)
+	}
 	selfAdapt();
      }
 }

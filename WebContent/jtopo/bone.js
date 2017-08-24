@@ -41,7 +41,7 @@ fishBrain.setSize(180, 60);// 尺寸
 fishBrain.borderRadius = 10;// 圆角
 fishBrain.borderWidth = 2;// 边框的宽度
 fishBrain.fillColor = '255,222,173';//边框颜色
-// fishBrain.dragable = false;
+ fishBrain.dragable = false;
 fishBrain.layout = {type: 'tree'}
 scene.add(fishBrain);
 var aa = fishBrain.getBound();
@@ -91,6 +91,7 @@ function IniLine(x1, y1, x2, y2, text){
     subNode.borderRadius = 10;// 圆角
     subNode.borderWidth = 2;// 边框的宽度
     subNode.fillColor = '0,191,255';//填充颜色
+    subNode.dragable = false;
     subNode['endx'] = 0;
     subNode['endy'] = 0;
     // subNode.dragable = false;

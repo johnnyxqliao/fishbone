@@ -85,7 +85,6 @@ var zNodes =[
 ];
 
 var global_wb;
-var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
 function process_wb(wb) {
     global_wb = wb;
     var output = to_csv(wb);
@@ -109,15 +108,17 @@ function process_wb(wb) {
 	
 	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 	
-	excelData.children.forEach(function(value,index,array){
-		for(var i=0;i<nodeArr.length;i++){
-			if(value.name===nodeArr[i].text){
+	var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
+	for(var i=0;i<nodeArr.length;i++){
+		excelData.children.forEach(function(value,index,array){
+			if(nodeArr[i].text===value.name){
 				value['node'] = nodeArr[i];
 				cal(value, true, value.node);
 				mainBoneAdaptSelf(value.node.endx-150, value.name);
 			}
-		}
-	},this)
+		},this)
+	}
+	
 	selfAdapt();
 }
 /*
@@ -197,7 +198,6 @@ function drawHori(attriNode, curNode, direction, index){
 	    	
 	    var id = curNode.name;
 	    var excelnode = excelNode(x, y, curNode.name, id);//画节点
-//	    excelnode.layout = {type: 'tree'};
 	    if(curNode.name==='/n**'){
 	    	excelnode['endx'] = 0;//计算横坐标补偿
 		    excelnode['endy'] = 0;
@@ -257,7 +257,8 @@ function drawVer(parentNode, curNode, direction, index){
     childNode.fontColor = "0,0,0";
 
     childNode.fillColor = "255,255,255";
-    childNode.font = 'blod 16px 微软雅黑';
+    childNode.font = '11px 微软雅黑';
+    childNode.dragable = false;
     if(yChild>350){
         childNode.textOffsetY =-15;
         childNode.rotate = -1.2;
@@ -453,9 +454,9 @@ function excelNode(x, y, text, id){
     excelNode.textOffsetY =-5;
     excelNode.fontColor = "0,0,0";
     excelNode.fillColor = "255,255,255";
-    excelNode.font = '14px 微软雅黑';
+    excelNode.font = '11px 微软雅黑';
     excelNode.setSize(50, 15);
-    // excelNode.dragable = false;
+     excelNode.dragable = false;
     excelNode.borderWidth = 0.1;
     scene.add(excelNode);
    
