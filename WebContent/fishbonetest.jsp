@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="./css/rightCSS.css" type="text/css"/>
         <link rel="stylesheet" href="./css/text.css" type="text/css"/>
         <link rel="stylesheet" href="./css/main.css" type="text/css"/>
-         <link rel="stylesheet" href="./css/demo.css" type="text/css"/>
+        <link rel="stylesheet" href="./css/demo.css" type="text/css"/>
         <link rel="stylesheet" href="./css/zTreeStyle.css" type="text/css"/>
         <link rel="stylesheet" href="./css/freezeRootNode.css" type="text/css"/>
         
@@ -35,6 +35,7 @@
         <script type="text/javascript" src="jtopo/jTopo.js"></script>
         <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="./jtopo/saveImages.js"></script>
+
         <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         
         
@@ -157,36 +158,36 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-	       <div class="modal-header">
-               <h4 class="modal-title">
+	       <div class="modal-header" >
+               <h4 class="modal-title" >
 					鱼骨图App使用说明:
 				</h4>
 		  </div>
 		  <div class="modal-body">
 				本WebApp提供两种绘制鱼骨图方法：<br/>
 				1、使用模板<br/>
-				&nbsp;&nbsp;1)点击“下载模板”，获取标准模板；<br/>
-				&nbsp;&nbsp;2)填写待解决问题以及问题原因；<br/>
-				&nbsp;&nbsp;<img src="./template/img/reasonAnasis.png" width="200px" height="100px"> <br/> 
-				&nbsp;&nbsp;3)删除模板中多余数据；<br/>
-				&nbsp;&nbsp;4)通过右键可以在侧边栏上数据，点击绘制鱼骨图，即可得到修改后的鱼骨图；<br/>
+				&nbsp;&nbsp;&nbsp;1)点击“下载模板”，获取标准模板；<br/>
+				&nbsp;&nbsp;&nbsp;2)填写待解决问题以及问题原因；<br/>
+				&nbsp;&nbsp;&nbsp;<img src="./template/img/reasonAnasis.png" width="200px" height="100px"> <br/> 
+				&nbsp;&nbsp;&nbsp;3)删除模板中多余数据；<br/>
+				&nbsp;&nbsp;&nbsp;4)通过右键可以在侧边栏上数据，点击绘制鱼骨图，即可得到修改后的鱼骨图；<br/>
 				2、在侧边栏交互编辑<br/>
-				&nbsp;&nbsp;1)编辑待解决问题；<br/>
-				&nbsp;&nbsp;2)分别添加每一级的子节点，并编辑；<br/>
-				&nbsp;&nbsp;3)点击绘制鱼骨图即可生成对应的鱼骨图；<br/>
-				&nbsp;&nbsp;4)点击居中，并保存图片；<br/>
+				&nbsp;&nbsp;&nbsp;1)编辑待解决问题；<br/>
+				&nbsp;&nbsp;&nbsp;2)分别添加每一级的子节点，并编辑；<br/>
+				&nbsp;&nbsp;&nbsp;3)点击绘制鱼骨图即可生成对应的鱼骨图；<br/>
+				&nbsp;&nbsp;&nbsp;4)点击居中，并保存图片；<br/>
 				3、注意事项<br/>
-				&nbsp;&nbsp;1)使用模板添加问题原因时，因保持问题之间的层次结构；<br/>
-				&nbsp;&nbsp;2)模板中每一行只能有一个数据；<br/>
-				&nbsp;&nbsp;3)保存图片时，应先居中；<br/>
+				&nbsp;&nbsp;&nbsp;1)使用模板添加问题原因时，因保持问题之间的层次结构；<br/>
+				&nbsp;&nbsp;&nbsp;2)模板中每一行只能有一个数据；<br/>
+				&nbsp;&nbsp;&nbsp;3)保存图片时，应先居中；<br/>
 				
 		  </div>
 		  <div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">关闭
 				</button>
 		  </div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
+		</div>
+	</div>
 </div>
 
 
@@ -195,7 +196,7 @@
     <script type="text/javascript" src="jtopo/bone.js"></script>
     <script type="text/javascript" src="jtopo/drawing.js"></script>    
     <script type="text/javascript" src="jtopo/tree.js"></script>  
-        
+    <script type="text/javascript" src="./jtopo/popups.js"></script>
     <script type="text/javascript" src="./jtopo/canvasAdapt.js"></script>
     </body>
 </html>

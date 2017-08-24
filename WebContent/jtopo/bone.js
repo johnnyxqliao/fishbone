@@ -1,8 +1,3 @@
-$(function(){
-	$("#myModal").modal();
-});
-
-
 //文本换行函数
 	CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
 	    var textArray = str.split('\n');
