@@ -213,7 +213,6 @@ function drawHori(attriNode, curNode, direction, index){
 	    }
 	    	scene.add(excelnode);
 	        scene.add(lineLink);
-	    
 	    return excelnode;
 }
 
