@@ -259,6 +259,7 @@ function drawVer(parentNode, curNode, direction, index){
     childNode.fillColor = "255,255,255";
     childNode.font = '11px 微软雅黑';
     childNode.dragable = false;
+    
     if(yChild>350){
         childNode.textOffsetY =-15;
         childNode.rotate = -1.2;
