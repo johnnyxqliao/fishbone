@@ -1,4 +1,9 @@
-	//文本换行函数
+$(function(){
+	$("#myModal").modal();
+});
+
+
+//文本换行函数
 	CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
 	    var textArray = str.split('\n');
 	    if(textArray==undefined||textArray==null)return false;
@@ -25,6 +30,7 @@
 var canvas = document.getElementById('canvas');//获取画布id
 
 var stage = new JTopo.Stage(canvas);//在画布上新建舞台
+     stage.wheelZoom = 0.85
 var scene = new JTopo.Scene(stage);//将舞台添加到场景中
 scene.background = './images/background.jpg';//设置背景图片
 
@@ -36,7 +42,7 @@ fishBrain.textPosition = 'Middle_Center';// 文字居中
 fishBrain.textOffsetY =-8;
 fishBrain.font = '18px 微软雅黑';// 字体
 fishBrain.fontColor = "0,0,0";
-fishBrain.setLocation(900, 320);// 位置
+fishBrain.setLocation(800, 320);// 位置
 fishBrain.setSize(180, 60);// 尺寸
 fishBrain.borderRadius = 10;// 圆角
 fishBrain.borderWidth = 2;// 边框的宽度

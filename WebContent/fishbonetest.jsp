@@ -8,7 +8,7 @@
         
 <!--  导入css -->
 
-        <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css"/>
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css"/>
         <link rel="stylesheet" href="css/uploadButton.css" type="text/css"/>
         <link rel="stylesheet" href="assets/css/font.css" type="text/css"/>
@@ -30,10 +30,12 @@
         <script type="text/javascript" src="js/shim.js"></script>
         <script type="text/javascript" src="js/jszip.js"></script>
 
+        <script type="text/javascript" src="jtopo/csvConvertJson.js"></script>  
         <script type="text/javascript" src="js/xlsx.js"></script>
         <script type="text/javascript" src="jtopo/jTopo.js"></script>
-        <script type="text/javascript" src="./jtopo/jquery-min.js"></script>
+        <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="./jtopo/saveImages.js"></script>
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         
         
     </head>
@@ -87,11 +89,12 @@
         </div>
         <div class="sidebar" id="sidebar" style=" border-top-width: 100px;margin-top: 50px; width: 190px;">
         <div style="margin-left:10px; float:left; padding-top: 5px;">
-                               <input type="submit" value="保存" id="dataSave"  class="file"/>
+                                <input type="submit" value="绘制鱼骨图" id="redraw" onclick="redraw()" class="file"/>
         </div>
         <div style="margin-left:10px; float:left; padding-top: 5px;">
-                                <input type="submit" value="重绘" id="redraw" onclick="redraw()" class="file"/>
+                                <input type="submit" value="帮助" id="redraw" onclick="$('#myModal').modal()" class="file"/>
         </div>
+        
         <div class="zTreeDemoBackground left" >
             <ul id="treeDemo" class="ztree"></ul>
         </div>
@@ -115,15 +118,6 @@
                                 <input type="submit" value="保存图片" onclick="convertCanvasToImage()" class="file"/>
                             </div>
 
-
-                            <div style="margin-left:10px;float:left; padding-top: 5px;">
-                                <input type="submit" value="缩小" onclick="zoomIn()" class="file"/>
-                            </div>
-
-                            <div style="margin-left:10px;float:left; padding-top: 5px;">
-                                <input type="submit" value="放大" onclick="zoomOut()" class="file"/>
-                            </div>
-
                             <div style="margin-left:10px;float:left; padding-top: 5px;">
                                 <input type="submit" value="居中" onclick="setCenter()" class="file"/>
                             </div>
@@ -135,7 +129,6 @@
                                   </span>
                             </div>
                       </div>
-
                 </div>
                                 <div id="canvasDiv">
                 <canvas id="canvas" width=1000 height=600></canvas>
@@ -160,12 +153,49 @@
                 <li id="m_check" onclick="updateNode()">编辑</li>
             </ul>
         </div>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	       <div class="modal-header">
+               <h4 class="modal-title">
+					鱼骨图App使用说明:
+				</h4>
+		  </div>
+		  <div class="modal-body">
+				本WebApp提供两种绘制鱼骨图方法：<br/>
+				1、使用模板<br/>
+				&nbsp;&nbsp;1)点击“下载模板”，获取标准模板；<br/>
+				&nbsp;&nbsp;2)填写待解决问题以及问题原因；<br/>
+				&nbsp;&nbsp;<img src="./template/img/reasonAnasis.png" width="200px" height="100px"> <br/> 
+				&nbsp;&nbsp;3)删除模板中多余数据；<br/>
+				&nbsp;&nbsp;4)通过右键可以在侧边栏上数据，点击绘制鱼骨图，即可得到修改后的鱼骨图；<br/>
+				2、在侧边栏交互编辑<br/>
+				&nbsp;&nbsp;1)编辑待解决问题；<br/>
+				&nbsp;&nbsp;2)分别添加每一级的子节点，并编辑；<br/>
+				&nbsp;&nbsp;3)点击绘制鱼骨图即可生成对应的鱼骨图；<br/>
+				&nbsp;&nbsp;4)点击居中，并保存图片；<br/>
+				3、注意事项<br/>
+				&nbsp;&nbsp;1)使用模板添加问题原因时，因保持问题之间的层次结构；<br/>
+				&nbsp;&nbsp;2)模板中每一行只能有一个数据；<br/>
+				&nbsp;&nbsp;3)保存图片时，应先居中；<br/>
+				
+		  </div>
+		  <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">关闭
+				</button>
+		  </div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+
     <script type="text/javascript" src="js/tree/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="js/tree/jquery.ztree.exedit.js"></script>
     <script type="text/javascript" src="jtopo/bone.js"></script>
     <script type="text/javascript" src="jtopo/drawing.js"></script>    
     <script type="text/javascript" src="jtopo/tree.js"></script>  
-    <script type="text/javascript" src="jtopo/csvConvertJson.js"></script>      
+        
     <script type="text/javascript" src="./jtopo/canvasAdapt.js"></script>
     </body>
 </html>

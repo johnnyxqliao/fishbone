@@ -1,4 +1,15 @@
 function init(data) {
+	//数据处理
+	var arr = [];
+	data.forEach(function(value, index, array){
+    	if(index>1){
+    	var element = value.split(",");
+    	arr.push(element);
+    	}
+    }, this);
+	 
+	data = arr;
+	//数据转换
 	var nodes = [{
 	    'name': data[0][0],
 	    'children': [],

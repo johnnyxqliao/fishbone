@@ -73,16 +73,13 @@ function to_csv(workbook) {
     return result.join("\n");
 }
 
-
-var zNodes =[
-    { id:1, pId:0, name:"待解决问题", open:true},
-    { id:11, pId:1, name:"人员", open:true},
-    { id:12, pId:1, name:"机器", open:true},
-    { id:13, pId:1, name:"材料", open:true},
-    { id:14, pId:1, name:"方法", open:true},
-    { id:15, pId:1, name:"环境", open:true},
-    { id:16, pId:1, name:"测量", open:true}
-];
+var baseData = ["SHEET: Sheet1","","待解决问题,",",人员"
+	         ,",机器",",材料",",方法",",环境",",测量",""];
+var zNodes =init(baseData);
+zNodes['open'] = true;
+zNodes =[zNodes];
+zNodes[0].children.splice(6,1);
+var excelData = zNodes[0];
 
 var global_wb;
 function process_wb(wb) {
@@ -90,17 +87,11 @@ function process_wb(wb) {
     var output = to_csv(wb);
     excelData = output.split("\n");
     //将表格中获取的数据发送到前台界面
-    fishBrain.text = excelData[2].split(",")[0];
-    zNodes[0].name = fishBrain.text;
     
-    var arr = [];
-    excelData.forEach(function(value, index, array){
-    	if(index>1){
-    	var element = value.split(",");
-    	arr.push(element);
-    	}
-    }, this);
-    excelData = init(arr);
+    
+    
+    excelData = init(excelData);
+    fishBrain.text = excelData.name;
     //将导入的表格数据在左侧显示出来
     excelData['open'] = true;
 	zNodes =[excelData];

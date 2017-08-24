@@ -120,7 +120,7 @@ function OnRightClick(event, treeId, treeNode) {
 	        showRMenu("root", event.clientX, event.clientY);
 	    } else if (treeNode && !treeNode.noR) {
 	        zTree.selectNode(treeNode);
-	        showRMenu(treeNode, event.clientX+20, event.clientY+32);
+	        showRMenu(treeNode, event.clientX+20, event.clientY);
 	    }
 	}
 
@@ -131,19 +131,20 @@ function showRMenu(type, x, y) {
 	    var testNum1 = (type.parentTId=="treeDemo_1");
 	    if (testNum0) {
 	        $("#m_del").hide();
-	        $("#m_check").hide();
+	        $("#m_check").show();
 	        $("#m_add").hide();
+	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
 	    } else if(testNum1){
 	        $("#m_del").hide();
 	        $("#m_check").hide();
 	        $("#m_add").show();
-	    }else{
+	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+	    }else if(type!=='root'){
 	    	$("#m_del").show();
 	        $("#m_check").show();
 	        $("#m_add").show();
+	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
 	    }
-	    rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
-
 	    $("body").bind("mousedown", onBodyMouseDown);
 	}
 
@@ -192,7 +193,12 @@ function hideRMenu() {
 	    var nodes = zTree.getSelectedNodes();
 	    var newName = window.prompt("输入新名称",nodes[0].name);
 	    if(newName!=nodes[0].name && newName!=null && newName!=undefined){
-	    	traverArr(excelData, nodes[0], 'rename', newName);
+	    	if(nodes[0].tId==="treeDemo_1"){
+	    		excelData.name=newName;
+	    	}else{
+	    		traverArr(excelData, nodes[0], 'rename', newName);
+	    	}
+	    	
 	        nodes[0].name = newName;
 	        zTree.updateNode(nodes[0]);
 	    }
@@ -252,6 +258,7 @@ function redraw(){
     	}
     }
     //根据当前的数据重绘鱼骨图
+    fishBrain.text = excelData.name;
 	var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
 	for(var i=0;i<nodeArr.length;i++){
 		excelData.children.forEach(function(value,index,array){
