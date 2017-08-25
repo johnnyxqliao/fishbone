@@ -105,12 +105,13 @@ function process_wb(wb) {
 			if(nodeArr[i].text===value.name){
 				value['node'] = nodeArr[i];
 				cal(value, true, value.node);
-				mainBoneAdaptSelf(value.node.endx-150, value.name);
+				mainBoneAdaptSelf(value.children, value.name);
 			}
 		},this)
 	}
 	
-	selfAdapt();
+	selfAdapt();//根节点补偿
+	setCenter();//绘制完成之后居中
 }
 /*
  * 更新根节点位置
@@ -410,7 +411,14 @@ function addNull(valueArr){
 /**
  * 主骨自适应函数
  */
-function mainBoneAdaptSelf(selfOffset, upperBone){
+function mainBoneAdaptSelf(childrenArr, upperBone){
+	var selfOffset=0;
+	for(var m=0;m<childrenArr.length;m++){
+		if(childrenArr[m].node.endx>selfOffset){
+			selfOffset = childrenArr[m].node.endx;
+		}
+	}
+	selfOffset -= 120;
         if(upperBone==="测量"){
             layoutAdaptSelf(methodNode, selfOffset);
             layoutAdaptSelf(machineNode, selfOffset);
@@ -476,7 +484,7 @@ function lineFeed(string){
 /**
  *读取excel内容函数的主函数入口
  */
-var xlf = document.getElementById('xlf');
+
 function handleFile(e) {
     rABS = true;
     use_worker = true;
@@ -512,6 +520,10 @@ function handleFile(e) {
     }
 }
 
+function getId(){
+	var xlf = document.getElementById('xlf');
 if (xlf.addEventListener)
     xlf.addEventListener('change', handleFile, false);
+}
+getId();
 	

@@ -24,6 +24,7 @@
 	    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
 	    zTree = $.fn.zTree.getZTreeObj("treeDemo");
 	    rMenu = $("#rMenu");
+	    setCenter();
 	});
 	
 	
@@ -251,12 +252,6 @@ function redraw(){
 	//加载鱼骨图基础骨架
 	var head = $("body").remove("script[role='reload']");  
     $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
-    for(i=0; i<excelData.length; i++){
-    	if(excelData[i].split(",").length>1 && excelData[i].split(",")[0]!==""){
-    		fishBrain.text = excelData[i].split(",")[0];
-    		break;
-    	}
-    }
     //根据当前的数据重绘鱼骨图
     fishBrain.text = excelData.name;
 	var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
@@ -265,10 +260,47 @@ function redraw(){
 			if(nodeArr[i].text===value.name){
 				value['node'] = nodeArr[i];
 				cal(value, true, value.node);
-				mainBoneAdaptSelf(value.node.endx-150, value.name);
+				mainBoneAdaptSelf(value.children, value.name);
 			}
 		},this)
 	}
-	selfAdapt();
+	selfAdapt();//根节点补偿
+	setCenter();//绘制完成之后居中
      }
+}
+
+/*
+ * 新建鱼骨图
+ */
+function newFishbone(){
+	var msg = "新建之后，将无法恢复之前的鱼骨图！！！\n\n确认要新建！";
+    if (confirm(msg)==true){
+        $("#canvas").remove();//删除当前画布
+	$("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
+	//画布自适应屏幕
+	$(window).resize(resizeCanvas);
+	function resizeCanvas() {
+	var width = $(window).get(0).innerWidth;
+	var height = $(window).get(0).innerHeight;
+	$("#canvas").attr("width", width-190);
+	$("#canvas").attr("height", height);
+	}
+	resizeCanvas();
+	//加载鱼骨图基础骨架
+	var head = $("body").remove("script[role='reload']");  
+   $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
+
+  baseData = ["SHEET: Sheet1","","待解决问题,",",人员"
+       ,",机器",",材料",",方法",",环境",",测量",""];
+  zNodes =init(baseData);
+  fishBrain.text = zNodes.name;
+  zNodes['open'] = true;
+  zNodes =[zNodes];
+  zNodes[0].children.splice(6,1);
+  excelData = zNodes[0];
+  $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+  $("#aFile").remove();
+  $("#chooseFile").append("<a class='file' id ='aFile' >选择文件<input type='file' name='xlfile' id='xlf' style='margin-left:10px;float:left'/></a>");//新建画布
+  getId();// 重新获得ID
+    }
 }
