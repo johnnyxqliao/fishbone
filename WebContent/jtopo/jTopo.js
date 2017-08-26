@@ -2065,17 +2065,17 @@ function(a) {
         }
         ,
         this.paintText = function(a) {
-            var b = this.text;
-            if (null != b && "" != b) {
-                a.beginPath(),
-                a.font = this.font;
-                var c = a.measureText(b).width
-                  , d = a.measureText("��").width;
-                a.fillStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")";
-                var e = this.getTextPostion(this.textPosition, c, d);
-                a.fillText(b, e.x, e.y),
-                a.closePath()
-            }
+        	 var b = this.text;
+             if (null != b && "" != b) {
+                 a.beginPath(),
+                 a.font = this.font;
+                 var c = a.measureText(b).width
+                   , d = a.measureText("田").width;
+                 a.fillStyle = "rgba(" + this.fontColor + ", " + this.alpha + ")";
+                 var e = this.getTextPostion(this.textPosition, c, d);
+                 a.fillText(b, e.x, e.y),
+                 a.closePath()
+             }
         }
         ,
         this.paintBorder = function(a) {
@@ -2105,19 +2105,19 @@ function(a) {
                 x: -this.width / 2 - b,
                 y: -this.height / 2 - c / 2
             } : "Bottom_Right" == a ? d = {
-                x: this.width / 2,
+                x: -this.width / 2,
                 y: this.height / 2 + c
             } : "Bottom_Left" == a ? d = {
-                x: -this.width / 2 - b,
+                x: this.width / 2 - b,
                 y: this.height / 2 + c
             } : "Middle_Center" == a ? d = {
                 x: -this.width / 2 + (this.width - b) / 2,
                 y: c / 2
             } : "Middle_Right" == a ? d = {
-                x: this.width / 2,
+                x: this.width / 2-b,
                 y: c / 2
             } : "Middle_Left" == a && (d = {
-                x: -this.width / 2 - b,
+                x: -this.width / 2 +15,
                 y: c / 2
             }),
             null != this.textOffsetX && (d.x += this.textOffsetX),

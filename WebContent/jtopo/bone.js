@@ -1,31 +1,9 @@
-//文本换行函数
-	CanvasRenderingContext2D.prototype.wrapText = function(str,x,y){
-	    var textArray = str.split('\n');
-	    if(textArray==undefined||textArray==null)return false;
 
-	    var rowCnt = textArray.length;
-	    var i = 0,imax  = rowCnt,maxLength = 0;maxText = textArray[0];
-	    for(;i<imax;i++){
-	        var nowText = textArray[i],textLength = nowText.length;
-	        if(textLength >=maxLength){
-	            maxLength = textLength;
-	            maxText = nowText;
-	        }
-	    }
-	    var maxWidth = this.measureText(maxText).width;
-	    var lineHeight = this.measureText("元").width;
-	    x-= lineHeight*2;
-	    for(var j= 0;j<textArray.length;j++){
-	        var words = textArray[j];
-	        this.fillText(words,-(maxWidth/2),y-textArray.length*lineHeight/2);
-	        y+= lineHeight;
-	    }
-	};
 	//定义画布、舞台以及场景
 var canvas = document.getElementById('canvas');//获取画布id
 
 var stage = new JTopo.Stage(canvas);//在画布上新建舞台
-     stage.wheelZoom = 0.85
+     stage.wheelZoom = 0.85;
 var scene = new JTopo.Scene(stage);//将舞台添加到场景中
 scene.background = './images/background.jpg';//设置背景图片
 
@@ -33,8 +11,7 @@ scene.background = './images/background.jpg';//设置背景图片
 var fishBrain = new JTopo.Node();
 fishBrain.text = '待解决问题';// 文字
 fishBrain.id = "10";
-fishBrain.textPosition = 'Middle_Center';// 文字居中
-fishBrain.textOffsetY =-8;
+fishBrain.textPosition = 'Middle_Left';// 文字居中
 fishBrain.font = '18px 微软雅黑';// 字体
 fishBrain.fontColor = "0,0,0";
 fishBrain.setLocation(800, 320);// 位置
@@ -85,7 +62,6 @@ function IniLine(x1, y1, x2, y2, text){
     subNode.id = text;
     subNode.text = text;// 文字
     subNode.textPosition = 'Middle_Center';// 文字居中
-    subNode.textOffsetY =-8;
     subNode.font = '16px 微软雅黑';// 字体
     subNode.fontColor = "0,0,0";
     subNode.setSize(80, 30);// 尺寸
@@ -95,7 +71,6 @@ function IniLine(x1, y1, x2, y2, text){
     subNode.dragable = false;
     subNode['endx'] = 0;
     subNode['endy'] = 0;
-    // subNode.dragable = false;
     scene.add(subNode);
     //连线
     if(y2<350){

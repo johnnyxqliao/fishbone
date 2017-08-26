@@ -4,14 +4,14 @@
 <html lang="en">
     <head>
        <script type="text/javascript" src="jtopo/jTopo.js"></script>
-       <script type="text/javascript" src="./jtopo/jquery-min.js"></script>
+        <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
     </head>
     <body>
    <canvas id="canvas" width="1000" height="600" ></canvas>
 
 <!--    http://www.jtopo.com/demo/img/bg.jpg -->
 <script>
-	 
+
 	var canvas = document.getElementById('canvas');            
     var stage = new JTopo.Stage(canvas);
     //显示工具栏
@@ -41,11 +41,12 @@
      var link = new JTopo.FlexionalLink(tree1, tree2, null, [0,0,0,0,10,15,-10,15]);
     link.direction = 'horizontal' || 'horizontal';
 
-
-
-    var tree3 = new JTopo.Node("test3");
+    var tree3 = new JTopo.Node();
+    tree3.text = 'asdfasdfasdfasdf';
+   
     tree3.setSize(20, 20);
     tree3.setLocation(400, 200);
+    tree3.textPosition = 'Middle_Right'; 
     scene.add(tree3);
 
     var tree4 = new JTopo.Node("test4");
@@ -57,6 +58,25 @@
     slashLink.direction = 'horizontal' || 'horizontal';
     scene.add(slashLink);
 
+    /**
+     * 超过四个节点换行函数
+     */
+    function lineFeed(string){
+        var lineFeed = string.split("");
+        var length = lineFeed.length;
+        var String = '';
+        var count = 0;
+        for (var i=0; i<length; i++){
+            count +=1;
+            String +=lineFeed[i];
+            if(count%5==0){
+                String +='\n';
+            }
+        }
+        console.log(String);
+        return String;
+    }
+    
 function node(x, y) {
     var testnode = new JTopo.Node();
     testnode.setLocation(x, y);
@@ -65,25 +85,16 @@ function node(x, y) {
 
 var storeArr = new Array();
 
-
 storeArr.push([tree1]);
 storeArr.push([tree2]);
 storeArr.push([tree3]);
 storeArr.push([tree4]);
-
-
-
-
-
-
-
 
     scene.add(link);
     scene.add(linkSlash1);
     scene.add(linkSlash2); 
 
     var currentNode = null;
-
 
 var nodearray = new Array();
 
