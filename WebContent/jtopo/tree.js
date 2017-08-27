@@ -254,6 +254,7 @@ function redraw(){
     $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
     //根据当前的数据重绘鱼骨图
     fishBrain.text = excelData.name;
+    fishBrain.setSize(fishBrain.text.split('').length*25, 60);// 尺寸
 	var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
 	for(var i=0;i<nodeArr.length;i++){
 		excelData.children.forEach(function(value,index,array){

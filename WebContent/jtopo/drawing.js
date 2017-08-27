@@ -413,7 +413,7 @@ function mainBoneAdaptSelf(childrenArr, upperBone){
 			maxTextLen = (maxTextLen>5?maxTextLen:0);
 		}
 	}
-	selfOffset +=maxTextLen*10;
+	selfOffset +=maxTextLen*15;
 	selfOffset -= 90;
         if(upperBone==="测量"){
             layoutAdaptSelf(methodNode, selfOffset);
