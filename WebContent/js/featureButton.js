@@ -1,0 +1,3 @@
+function setCenter(){
+	stage.centerAndZoom()
+}
