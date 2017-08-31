@@ -330,10 +330,10 @@ function drawVerLine(rootNode, subNode, index){
 	}else{//鱼骨下方
 		if(index==0){//首次添加斜节点
 			var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [20, 12.5, -45, 12.5,
-				                                                               -5-subTextLen*15*0.34, -25+subTextLen*15*0.94, -5, -25]);
+				                                                             -20-subTextLen*10*0.34, 16.7+subTextLen*10*0.94,-5, -25]);
 		}else{//正常添加斜节点
 			var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [-23, 25, -5, -25, 
-				                                                               -23-subTextLen*15*0.34, 25+subTextLen*15*0.94, -5, -25]);
+				                                                               -23-subTextLen*10*0.34, 25+subTextLen*10*0.94, -5, -25]);
 		}
 	}
 	slashLink.direction = 'horizontal' || 'horizontal';

@@ -16,7 +16,7 @@
 	    callback: {
 			beforeExpand: beforeExpand,
 			onExpand: onExpand,
-	        onRightClick: OnRightClick
+//	        onRightClick: OnRightClick
 	    }
 	};
 	
@@ -25,7 +25,7 @@
 	$(document).ready(function(){
 	    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
 	    zTree = $.fn.zTree.getZTreeObj("treeDemo");
-	    rMenu = $("#rMenu");
+//	    rMenu = $("#rMenu");
 	    setCenter();
 	});
 	
@@ -115,57 +115,61 @@ function dblClickExpand(treeId, treeNode) {
 		return treeNode.level > 0;
 	}
 
-//定义右键属性
-function OnRightClick(event, treeId, treeNode) {
-	    if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
-	        zTree.cancelSelectedNode();
-	        showRMenu("root", event.clientX, event.clientY);
-	    } else if (treeNode && !treeNode.noR) {
-	        zTree.selectNode(treeNode);
-	        showRMenu(treeNode, event.clientX, event.clientY);
-	    }
-	}
+////定义右键属性
+//function OnRightClick(event, treeId, treeNode) {
+//	    if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+//	        zTree.cancelSelectedNode();
+//	        showRMenu("root", event.clientX, event.clientY);
+//	    } else if (treeNode && !treeNode.noR) {
+//	        zTree.selectNode(treeNode);
+//	        showRMenu(treeNode, event.clientX, event.clientY);
+//	    }
+//	}
 
 //右键展开菜单
-function showRMenu(type, x, y) {
-	    $("#rMenu ul").show();
-	    var testNum0 = (type.tId=="treeDemo_1");
-	    var testNum1 = (type.parentTId=="treeDemo_1");
-	    if (testNum0) {
-	        $("#m_del").hide();
-	        $("#m_check").show();
-	        $("#m_add").hide();
-	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
-	    } else if(testNum1){
-	        $("#m_del").hide();
-	        $("#m_check").hide();
-	        $("#m_add").show();
-	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
-	    }else if(type!=='root'){
-	    	$("#m_del").show();
-	        $("#m_check").show();
-	        $("#m_add").show();
-	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
-	    }
-	    $("body").bind("mousedown", onBodyMouseDown);
-	}
+//function showRMenu(type, x, y) {
+//	    $("#rMenu ul").show();
+//	    var testNum0 = (type.tId=="treeDemo_1");
+//	    var testNum1 = (type.parentTId=="treeDemo_1");
+//	    if (testNum0) {
+//	        $("#m_del").hide();
+//	        $("#m_check").show();
+//	        $("#m_add").hide();
+//	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+//	    } else if(testNum1){
+//	        $("#m_del").hide();
+//	        $("#m_check").hide();
+//	        $("#m_add").show();
+//	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+//	    }else if(type!=='root'){
+//	    	$("#m_del").show();
+//	        $("#m_check").show();
+//	        $("#m_add").show();
+//	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+//	    }
+//	    $("body").bind("mousedown", onBodyMouseDown);
+//	}
 
-function onBodyMouseDown(event){
-    if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
-        rMenu.css({"visibility" : "hidden"});
-    }
-}
-	
-function hideRMenu() {
-    if (rMenu) rMenu.css({"visibility": "hidden"});
-    $("body").unbind("mousedown", onBodyMouseDown);
-}
+//function onBodyMouseDown(event){
+//    if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+//        rMenu.css({"visibility" : "hidden"});
+//    }
+//}
+//	
+//function hideRMenu() {
+//    if (rMenu) rMenu.css({"visibility": "hidden"});
+//    $("body").unbind("mousedown", onBodyMouseDown);
+//}
 	
 	
 	var addCount = 1;
 	function addTreeNode() {
-	    hideRMenu();
-	    var newNode = { name:"增加" + (addCount++)};
+	    var testNum0 = (zTree.getSelectedNodes()[0].tId=="treeDemo_1");//根节点
+	    var testNum1 = (zTree.getSelectedNodes()[0].parentTId=="treeDemo_1");//第二级节点
+		if(testNum0){
+			$('#noAdd').modal();
+		}else{
+			var newNode = { name:"增加" + (addCount++)};
 	    if (zTree.getSelectedNodes()[0]) {
 	        newNode.checked = zTree.getSelectedNodes()[0].checked;
 	        zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
@@ -173,11 +177,16 @@ function hideRMenu() {
 	        zTree.addNodes(null, newNode);
 	    }
 	    traverArr(excelData, zTree.getSelectedNodes()[0], 'add', newNode.name);
+		}
 	}
 	
 	function removeTreeNode() {
-	    hideRMenu();
-	    var nodes = zTree.getSelectedNodes();
+		var testNum0 = (zTree.getSelectedNodes()[0].tId=="treeDemo_1");//根节点
+	    var testNum1 = (zTree.getSelectedNodes()[0].parentTId=="treeDemo_1");//第二级节点
+	    if(testNum0 || testNum1){
+	    	$('#noDelete').modal();
+	    }else{
+	    	var nodes = zTree.getSelectedNodes();
 	    if (nodes && nodes.length>0) {
 	        if (nodes[0].children && nodes[0].children.length > 0) {
 	            var msg = "要删除的节点是父节点，如果删除将连同子节点一起删掉。\n\n确认要删除！";
@@ -189,10 +198,15 @@ function hideRMenu() {
 	        }
 	    }
 	    traverArr(excelData, nodes[0], 'delete', null);
+	    }
 	}
 
 	function updateNode(postionJson){//更新节点-修改节点名称
-	    var nodes = zTree.getSelectedNodes();
+		var testNum1 = (zTree.getSelectedNodes()[0].parentTId=="treeDemo_1");//第二级节点
+		if(testNum1){
+			$('#noEdit').modal();
+		}else{
+			 var nodes = zTree.getSelectedNodes();
 	    var newName = window.prompt("输入新名称",nodes[0].name);
 	    if(newName!=nodes[0].name && newName!=null && newName!=undefined){
 	    	if(nodes[0].tId==="treeDemo_1"){
@@ -204,7 +218,7 @@ function hideRMenu() {
 	        nodes[0].name = newName;
 	        zTree.updateNode(nodes[0]);
 	    }
-	    hideRMenu();
+		}
 	}
 	
 /*
@@ -237,8 +251,6 @@ function hideRMenu() {
  *重新绘制图象
  */	
 function redraw(){
-	 var msg = "重绘之后，将无法恢复之前的鱼骨图！！！\n\n确认要重绘！";
-     if (confirm(msg)==true){
          $("#canvas").remove();//删除当前画布
 	$("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
 	//画布自适应屏幕
@@ -268,15 +280,12 @@ function redraw(){
 	}
 	selfAdapt();//根节点补偿
 	setCenter();//绘制完成之后居中
-     }
 }
 
 /*
  * 新建鱼骨图
  */
 function newFishbone(){
-	var msg = "新建之后，将无法恢复之前的鱼骨图！！！\n\n确认要新建！";
-    if (confirm(msg)==true){
         $("#canvas").remove();//删除当前画布
 	$("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
 	//画布自适应屏幕
@@ -304,5 +313,4 @@ function newFishbone(){
   $("#xlf").remove();
   $("#chooseFile").append("<input type='file' name='xlfile' id='xlf'/>");//新建画布
   getId();// 重新获得ID
-    }
 }

@@ -44,15 +44,15 @@
 	   
         <div class="sidebar" id="sidebar" style="margin-top: 5px; width: 190px;background-color:#FFFFFF">
                             <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;padding-left: 0px;" onclick="updateNode()">
-						        <i class="glyphicon glyphicon-edit">编辑</i>
+						        <i class="glyphicon glyphicon-text-width">编辑</i>
 						    </button>
 						    
 						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="addTreeNode();">
-						        <i class="glyphicon glyphicon-new-window">添加</i>
+						        <i class="glyphicon glyphicon-plus">添加</i>
 						    </button>
 						    
 						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="removeTreeNode();">
-						        <i class="glyphicon glyphicon-new-window">删除</i>
+						        <i class="glyphicon glyphicon-minus">删除</i>
 						    </button>
 						   
 						     <div class="zTreeDemoBackground left nav_wrap" >
@@ -81,16 +81,16 @@
 						        <i class="	glyphicon glyphicon-saved"> 保存</i>
 						    </button>
 						    
-						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;" onclick="$('#myModal').modal()">
-						        <i class="glyphicon glyphicon-info-sign"> 帮助</i>
-						    </button>
-						    
-						     <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;padding-left: 0px;" onclick="redraw()">
+						     <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#redraw').modal()">
 						        <i class="glyphicon glyphicon-edit"> 重绘</i>
 						    </button>
 						    
-						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="newFishbone()">
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#renew').modal()">
 						        <i class="glyphicon glyphicon-new-window"> 新建</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#myModal').modal()">
+						        <i class="glyphicon glyphicon-info-sign"> 帮助</i>
 						    </button>
                       </div>
                 </div>
@@ -140,7 +140,7 @@
 		</div>
 	</div>
 </div>
-
+<!-- 导入文件模态框 -->
 <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -159,7 +159,93 @@
 		</div>
 	</div>
 </div>
-
+<!-- 不允许添加模态框 -->
+<div class="modal fade" id="noAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		   <div class="modal-header" style="text-align:center;padding-top: 50px;padding-bottom: 50px;padding-left: 0px;padding-right: 0px;">
+	        <h4 class="modal-title" id="myModalLabel">不允许添加子节点</h4>
+	      </div>
+	      <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				确定
+				</button>
+		  </div>
+		</div>
+	</div>
+</div>
+<!-- 不允许编辑模态框 -->
+<div class="modal fade" id="noEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		   <div class="modal-header" style="text-align:center;padding-top: 50px;padding-bottom: 50px;padding-left: 0px;padding-right: 0px;">
+	        <h4 class="modal-title" id="myModalLabel">不允许编辑该节点</h4>
+	      </div>
+	      <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				确定
+				</button>
+		  </div>
+		</div>
+	</div>
+</div>
+<!-- 不允许删除模态框 -->
+<div class="modal fade" id="noDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		   <div class="modal-header" style="text-align:center;padding-top: 50px;padding-bottom: 50px;padding-left: 0px;padding-right: 0px;">
+	        <h4 class="modal-title" id="myModalLabel">不允许删除该节点</h4>
+	      </div>
+	      <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				确定
+				</button>
+		  </div>
+		</div>
+	</div>
+</div>
+<!-- 重绘-->
+<div class="modal fade" id="redraw" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		   <div class="modal-header" style="text-align:center;padding-top: 50px;padding-bottom: 50px;padding-left: 0px;padding-right: 0px;">
+	        <h4 class="modal-title" id="myModalLabel">
+	                       如果重绘将无法恢复原来的鱼骨图数据。</br>
+	                       确认重绘请点击“确认”按钮，否则点击“取消”按钮。
+	        </h4>
+	      </div>
+	      <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="redraw()" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				确定
+				</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				取消
+				</button>
+		  </div>
+		</div>
+	</div>
+</div>
+<!-- 新建-->
+<div class="modal fade" id="renew" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		   <div class="modal-header" style="text-align:center;padding-top: 50px;padding-bottom: 50px;padding-left: 0px;padding-right: 0px;">
+	        <h4 class="modal-title" id="myModalLabel">
+	                       如果新建将无法恢复原来的鱼骨图数据。</br>
+	                       确认重绘请点击“确认”按钮，否则点击“取消”按钮。
+	        </h4>
+	      </div>
+	      <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="newFishbone()" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				确定
+				</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				取消
+				</button>
+		  </div>
+		</div>
+	</div>
+</div>
     <script type="text/javascript" src="js/featureButton.js"></script>
     <script type="text/javascript" src="js/tree/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="js/tree/jquery.ztree.exedit.js"></script>
