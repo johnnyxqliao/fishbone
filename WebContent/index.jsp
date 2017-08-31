@@ -20,7 +20,6 @@
         <link rel="stylesheet" href="./css/zTreeStyle.css" type="text/css"/>
         <link rel="stylesheet" href="./css/freezeRootNode.css" type="text/css"/>
         <!-- 表头CSS -->
-		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" />
 		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
 		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
 		
@@ -43,44 +42,56 @@
 	<jsp:include page="/decorators/banner.jsp"></jsp:include>
 	<jsp:include page="/decorators/copyright.jsp"></jsp:include>
 	   
-        <div class="sidebar" id="sidebar" style="margin-top: 5px; width: 190px;">
-        <div style="margin-left:10px; float:left; padding-top: 5px;">
-                                <input type="submit" value="绘制鱼骨图" id="redraw" onclick="redraw()" class="file"/>
+        <div class="sidebar" id="sidebar" style="margin-top: 5px; width: 190px;background-color:#FFFFFF">
+                            <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;padding-left: 0px;" onclick="updateNode()">
+						        <i class="glyphicon glyphicon-edit">编辑</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="addTreeNode();">
+						        <i class="glyphicon glyphicon-new-window">添加</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="removeTreeNode();">
+						        <i class="glyphicon glyphicon-new-window">删除</i>
+						    </button>
+						   
+						     <div class="zTreeDemoBackground left nav_wrap" >
+            <ul id="treeDemo" class="ztree nav_ul"></ul>
         </div>
-        <div style="margin-left:10px; float:left; padding-top: 5px;">
-                                <input type="submit" value="新建" id="redraw" onclick="newFishbone()" class="file"/>
-        </div>
-        
-        <div class="zTreeDemoBackground left" >
-            <ul id="treeDemo" class="ztree"></ul>
-        </div>
+						    
+       
      </div>
-            <div class="main-content" style="height: 720px;">
+            <div class="main-content" >
                 <div class="breadcrumbs" id="breadcrumbs">
-                        <div style="margin-left:10px;float:left; padding-top: 5px;">
+                        <div>
 
-                            <div style="margin-left:10px; float:left; padding-top: 5px;">
-                                <a href="template/template.xls" class="file">下载模板</a>
-                            </div>
-
-                            <div id="chooseFile" style="margin-left:10px; float:left; padding-top: 5px;">
-                                <a class="file" id='aFile'>
-                                                                                    选择文件
-                                 <input type="file" name="xlfile" id="xlf" style="margin-left:10px;float:left"/>
-                                </a>
-                            </div>
-
-                            <div style="margin-left:10px; float:left; padding-top: 5px;">
-                                <input type="submit" value="保存图片" onclick="convertCanvasToImage()" class="file" style="float:left"/>
-                            </div>
-
-                            <div style="margin-left:10px;float:left; padding-top: 5px;">
-                                <input type="submit" value="居中" onclick="setCenter()" class="file" style="float:left"/>
-                            </div>
-                            
-                            <div style="margin-left:10px;float:left; padding-top: 5px;">
-                                <input type="submit" value="帮助" onclick="$('#myModal').modal()" class="file" style="float:left"/>
-                            </div>
+                            <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;margin-left: 5px;padding-left: 0px;margin-right: 5px;" onclick="downloadFile()">
+						        <i class="glyphicon glyphicon-download-alt"> 下载模板</i>
+						    </button>
+						    
+						    <button type="submit" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#myModal1').modal()">
+						        <i class="glyphicon glyphicon-upload"> 导入</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="setCenter()">
+						        <i class="glyphicon glyphicon-align-center"> 居中</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="convertCanvasToImage()">
+						        <i class="	glyphicon glyphicon-saved"> 保存</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;" onclick="$('#myModal').modal()">
+						        <i class="glyphicon glyphicon-info-sign"> 帮助</i>
+						    </button>
+						    
+						     <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;padding-left: 0px;" onclick="redraw()">
+						        <i class="glyphicon glyphicon-edit"> 重绘</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="newFishbone()">
+						        <i class="glyphicon glyphicon-new-window"> 新建</i>
+						    </button>
                       </div>
                 </div>
                     <div id="canvasDiv" style="border-bottom:1px solid #000 ">
@@ -88,17 +99,6 @@
                     </div>
                 </div>
 
-            <ul id="contextmenu" style="display:none;">
-                <li>
-                    <a  href="javascript:addNode()">添加子节点</a>
-                </li>
-                <li>
-                    <a href="javascript:deleteNode()">删除节点</a>
-                </li>
-                <li>
-                    <a>撤销</a>
-                </li>
-            </ul>
         <div id="rMenu">
             <ul>
                 <li id="m_add" onclick="addTreeNode();">添加</li>
@@ -132,7 +132,6 @@
 				&nbsp;&nbsp;&nbsp;1)使用模板添加问题原因时，因保持问题之间的层次结构；<br/>
 				&nbsp;&nbsp;&nbsp;2)模板中每一行只能有一个数据；<br/>
 				&nbsp;&nbsp;&nbsp;3)保存图片时，应先居中；<br/>
-				
 		  </div>
 		  <div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">关闭
@@ -141,6 +140,26 @@
 		</div>
 	</div>
 </div>
+
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		   <div class="modal-header">
+	        <h4 class="modal-title" id="myModalLabel">导入文件</h4>
+	      </div>
+	       <div class="modal-body" style="padding-top: 50px;padding-bottom: 50px;">
+               <div id="chooseFile">
+                       <input type="file" name="xlfile" id="xlf"/>
+               </div>
+		  </div>
+		  <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">确定
+				</button>
+		  </div>
+		</div>
+	</div>
+</div>
+
     <script type="text/javascript" src="js/featureButton.js"></script>
     <script type="text/javascript" src="js/tree/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="js/tree/jquery.ztree.exedit.js"></script>

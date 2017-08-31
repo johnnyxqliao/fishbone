@@ -4,6 +4,8 @@
 
 	var setting = {
 	    view: {
+	    	showLine: false,
+			showIcon: false,
 	        dblClickExpand: true
 	    },
 	    data: {
@@ -108,7 +110,6 @@ function onExpand(event, treeId, treeNode) {
 		curExpandNode = treeNode;
 	}
 
-	
 //冻结根节点函数
 function dblClickExpand(treeId, treeNode) {
 		return treeNode.level > 0;
@@ -121,7 +122,7 @@ function OnRightClick(event, treeId, treeNode) {
 	        showRMenu("root", event.clientX, event.clientY);
 	    } else if (treeNode && !treeNode.noR) {
 	        zTree.selectNode(treeNode);
-	        showRMenu(treeNode, event.clientX+20, event.clientY);
+	        showRMenu(treeNode, event.clientX, event.clientY);
 	    }
 	}
 
@@ -254,7 +255,7 @@ function redraw(){
     $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
     //根据当前的数据重绘鱼骨图
     fishBrain.text = excelData.name;
-    fishBrain.setSize(fishBrain.text.split('').length*25, 60);// 尺寸
+    fishBrain.setSize(fishBrain.text.split('').length*20, 60);// 尺寸
 	var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
 	for(var i=0;i<nodeArr.length;i++){
 		excelData.children.forEach(function(value,index,array){
@@ -300,8 +301,8 @@ function newFishbone(){
   zNodes[0].children.splice(6,1);
   excelData = zNodes[0];
   $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-  $("#aFile").remove();
-  $("#chooseFile").append("<a class='file' id ='aFile' >选择文件<input type='file' name='xlfile' id='xlf' style='margin-left:10px;float:left'/></a>");//新建画布
+  $("#xlf").remove();
+  $("#chooseFile").append("<input type='file' name='xlfile' id='xlf'/>");//新建画布
   getId();// 重新获得ID
     }
 }

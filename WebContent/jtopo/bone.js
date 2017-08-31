@@ -11,19 +11,17 @@ scene.background = './images/background.jpg';//设置背景图片
 var fishBrain = new JTopo.Node();
 fishBrain.text = '待解决问题';// 文字
 fishBrain.id = "10";
-fishBrain.textPosition = 'Middle_Left';// 文字居中
+fishBrain.textPosition = 'Middle_Center';// 文字居中
 fishBrain.font = '18px 微软雅黑';// 字体
-fishBrain.fontColor = "0,0,0";
+fishBrain.fontColor = "255,255,255";
 fishBrain.setLocation(800, 320);// 位置
 fishBrain.setSize(180, 60);// 尺寸
-fishBrain.borderRadius = 10;// 圆角
 fishBrain.borderWidth = 2;// 边框的宽度
-fishBrain.fillColor = '255,222,173';//边框颜色
+fishBrain.fillColor = '210,105,30';//边框颜色
  fishBrain.dragable = false;
 fishBrain.layout = {type: 'tree'}
 scene.add(fishBrain);
 var aa = fishBrain.getBound();
-//console.log(aa);
 
 /**
  * 绘制鱼身函数
@@ -39,11 +37,9 @@ function mainBone(mainNode){
 /**
  * 定义六个主骨的位置
  */
-
 function IniLine(x1, y1, x2, y2, text){
 	
 	var pointNode = new JTopo.Node(); 
-	pointNode.id = text;
 	pointNode.setLocation(x1, y1);
 	pointNode.setSize(1, 1);
 	pointNode.layout = {type: 'tree'}
@@ -59,15 +55,13 @@ function IniLine(x1, y1, x2, y2, text){
         subNode.setLocation(x2+92, y2+198);
         subNode.rotate = 1.2;
     }
-    subNode.id = text;
     subNode.text = text;// 文字
     subNode.textPosition = 'Middle_Center';// 文字居中
     subNode.font = '16px 微软雅黑';// 字体
-    subNode.fontColor = "0,0,0";
+    subNode.fontColor = "255,255,255";
     subNode.setSize(80, 30);// 尺寸
-    subNode.borderRadius = 10;// 圆角
     subNode.borderWidth = 2;// 边框的宽度
-    subNode.fillColor = '0,191,255';//填充颜色
+    subNode.fillColor = '34,139,34';//填充颜色
     subNode.dragable = false;
     subNode['endx'] = 0;
     subNode['endy'] = 0;

@@ -90,7 +90,7 @@ function process_wb(wb) {
     
     excelData = init(excelData);
     fishBrain.text = excelData.name;
-    fishBrain.setSize(fishBrain.text.split('').length*25, 60);// 尺寸
+    fishBrain.setSize(fishBrain.text.split('').length*20, 60);// 尺寸
     //将导入的表格数据在左侧显示出来
     excelData['open'] = true;
 	zNodes =[excelData];

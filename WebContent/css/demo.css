@@ -1,11 +1,13 @@
 dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
 	margin: 0;padding: 0;border: 0;outline: 0;font-weight: inherit;font-style: inherit;font-size: 100%;font-family: inherit;vertical-align: baseline;}
-body {color: #2f332a;font: 15px/21px Arial, Helvetica, simsun, sans-serif;background: #f0f6e4 \9;}
+/* body {color: #2f332a;font: 15px/21px Arial, Helvetica, simsun, sans-serif;background: #f0f6e4 \9;} */
 
+ul.ztree {margin-top: 10px;background: #FFFFFF;width:175px; overflow-y:scroll;overflow-x:auto;}
 
-a {color:#3C6E31;text-decoration: underline;}
-a:hover {background-color:#3C6E31;color:white;}
-
-
-ul.ztree {margin-top: 10px;background: #f0f6e4;width:175px; overflow-y:scroll;overflow-x:auto;}
+.nav_wrap{  
+    height: 100%;  
+    width: 91%;  
+    overflow: hidden;  
+    border-left: 15px solid #FFFFFF;  
+}  
 

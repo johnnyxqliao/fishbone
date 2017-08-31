@@ -23,11 +23,11 @@
 	 div#rMenu {position:absolute; 
 	            visibility:hidden; 
 	            top:0;
-	            background-color:#F8F8FF;
+	            background-color:#FFFFFF;
 	            text-align: left;
 	            padding: 2px;}
 	            
      div#rMenu ul li{padding: 0 5px;
                      cursor: pointer;
                      list-style: none outside none;
-                     background-color: #DFDFDF;}
+                     background-color:#FFEBCD;}
