@@ -115,53 +115,6 @@ function dblClickExpand(treeId, treeNode) {
 		return treeNode.level > 0;
 	}
 
-////定义右键属性
-//function OnRightClick(event, treeId, treeNode) {
-//	    if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
-//	        zTree.cancelSelectedNode();
-//	        showRMenu("root", event.clientX, event.clientY);
-//	    } else if (treeNode && !treeNode.noR) {
-//	        zTree.selectNode(treeNode);
-//	        showRMenu(treeNode, event.clientX, event.clientY);
-//	    }
-//	}
-
-//右键展开菜单
-//function showRMenu(type, x, y) {
-//	    $("#rMenu ul").show();
-//	    var testNum0 = (type.tId=="treeDemo_1");
-//	    var testNum1 = (type.parentTId=="treeDemo_1");
-//	    if (testNum0) {
-//	        $("#m_del").hide();
-//	        $("#m_check").show();
-//	        $("#m_add").hide();
-//	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
-//	    } else if(testNum1){
-//	        $("#m_del").hide();
-//	        $("#m_check").hide();
-//	        $("#m_add").show();
-//	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
-//	    }else if(type!=='root'){
-//	    	$("#m_del").show();
-//	        $("#m_check").show();
-//	        $("#m_add").show();
-//	        rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
-//	    }
-//	    $("body").bind("mousedown", onBodyMouseDown);
-//	}
-
-//function onBodyMouseDown(event){
-//    if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
-//        rMenu.css({"visibility" : "hidden"});
-//    }
-//}
-//	
-//function hideRMenu() {
-//    if (rMenu) rMenu.css({"visibility": "hidden"});
-//    $("body").unbind("mousedown", onBodyMouseDown);
-//}
-	
-	
 	var addCount = 1;
 	function addTreeNode() {
 	    var testNum0 = (zTree.getSelectedNodes()[0].tId=="treeDemo_1");//根节点
@@ -186,14 +139,10 @@ function dblClickExpand(treeId, treeNode) {
 	    if(testNum0 || testNum1){
 	    	$('#noDelete').modal();
 	    }else{
+	    	$('#confirmDelete').modal();
 	    	var nodes = zTree.getSelectedNodes();
 	    if (nodes && nodes.length>0) {
 	        if (nodes[0].children && nodes[0].children.length > 0) {
-	            var msg = "要删除的节点是父节点，如果删除将连同子节点一起删掉。\n\n确认要删除！";
-	            if (confirm(msg)==true){
-	                zTree.removeNode(nodes[0]);
-	            }
-	        } else {
 	            zTree.removeNode(nodes[0]);
 	        }
 	    }

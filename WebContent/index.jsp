@@ -51,21 +51,27 @@
 						        <i class="glyphicon glyphicon-plus">添加</i>
 						    </button>
 						    
-						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="removeTreeNode();">
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="removeTreeNode()">
 						        <i class="glyphicon glyphicon-minus">删除</i>
 						    </button>
 						   
-						     <div class="zTreeDemoBackground left nav_wrap" >
+		<div class="zTreeDemoBackground left nav_wrap" id="sideTree">
             <ul id="treeDemo" class="ztree nav_ul"></ul>
         </div>
 						    
-       
      </div>
             <div class="main-content" >
-                <div class="breadcrumbs" id="breadcrumbs">
+                <div class="breadcrumbs" id="breadcrumbs" style="border-bottom: 0px;">
                         <div>
-
-                            <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;margin-left: 5px;padding-left: 0px;margin-right: 5px;" onclick="downloadFile()">
+						     <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;;margin-left: 5px;" onclick="$('#redraw').modal()">
+						        <i class="glyphicon glyphicon-edit"> 重绘</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#renew').modal()">
+						        <i class="glyphicon glyphicon-new-window"> 新建</i>
+						    </button>
+						    
+                            <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="downloadFile()">
 						        <i class="glyphicon glyphicon-download-alt"> 下载模板</i>
 						    </button>
 						    
@@ -81,21 +87,13 @@
 						        <i class="	glyphicon glyphicon-saved"> 保存</i>
 						    </button>
 						    
-						     <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#redraw').modal()">
-						        <i class="glyphicon glyphicon-edit"> 重绘</i>
-						    </button>
-						    
-						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#renew').modal()">
-						        <i class="glyphicon glyphicon-new-window"> 新建</i>
-						    </button>
-						    
 						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#myModal').modal()">
 						        <i class="glyphicon glyphicon-info-sign"> 帮助</i>
 						    </button>
                       </div>
                 </div>
-                    <div id="canvasDiv" style="border-bottom:1px solid #000 ">
-                          <canvas id="canvas" width=1000 height=600 ></canvas>
+                    <div id="canvasDiv">
+                          <canvas id="canvas" width=1000 height=600></canvas>
                     </div>
                 </div>
 
@@ -237,6 +235,27 @@
 	      </div>
 	      <div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="newFishbone()" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				确定
+				</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
+				取消
+				</button>
+		  </div>
+		</div>
+	</div>
+</div>
+<!-- 确认删除-->
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+		   <div class="modal-header" style="text-align:center;padding-top: 50px;padding-bottom: 50px;padding-left: 0px;padding-right: 0px;">
+	        <h4 class="modal-title" id="myModalLabel">
+	                       如果删除该节点，该节点的子节点也将会一起删除</br>
+	                       确认重绘请点击“确认”按钮，否则点击“取消”按钮。
+	        </h4>
+	      </div>
+	      <div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="removeTreeNode();" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
 				确定
 				</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal" style="padding-top: 5px;padding-bottom: 5px;padding-right: 10px;padding-left: 10px;">
