@@ -134,22 +134,29 @@ function dblClickExpand(treeId, treeNode) {
 	}
 	
 	function removeTreeNode() {
-		var testNum0 = (zTree.getSelectedNodes()[0].tId=="treeDemo_1");//根节点
-	    var testNum1 = (zTree.getSelectedNodes()[0].parentTId=="treeDemo_1");//第二级节点
-	    if(testNum0 || testNum1){
-	    	$('#noDelete').modal();
-	    }else{
-	    	$('#confirmDelete').modal();
+//		var testNum0 = (zTree.getSelectedNodes()[0].tId=="treeDemo_1");//根节点
+//	    var testNum1 = (zTree.getSelectedNodes()[0].parentTId=="treeDemo_1");//第二级节点
+//	    if(testNum0 || testNum1){
+//	    	$('#noDelete').modal();
+//	    }else{
+//	    	$('#confirmDelete').modal();
 	    	var nodes = zTree.getSelectedNodes();
 	    if (nodes && nodes.length>0) {
-	        if (nodes[0].children && nodes[0].children.length > 0) {
 	            zTree.removeNode(nodes[0]);
-	        }
 	    }
 	    traverArr(excelData, nodes[0], 'delete', null);
-	    }
+//	    }
 	}
 
+function chooseDelete(){
+	var testNum0 = (zTree.getSelectedNodes()[0].tId=="treeDemo_1");//根节点
+	if(testNum0){
+		$('#noDelete').modal();
+	}else{
+		$('#confirmDelete').modal();
+	}
+}	
+	
 	function updateNode(postionJson){//更新节点-修改节点名称
 		var testNum1 = (zTree.getSelectedNodes()[0].parentTId=="treeDemo_1");//第二级节点
 		if(testNum1){

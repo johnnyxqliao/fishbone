@@ -51,7 +51,7 @@
 						        <i class="glyphicon glyphicon-plus">添加</i>
 						    </button>
 						    
-						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="removeTreeNode()">
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 5px;left: 5px;margin-left: 5px;padding-left: 0px;" onclick="chooseDelete()">
 						        <i class="glyphicon glyphicon-minus">删除</i>
 						    </button>
 						   
