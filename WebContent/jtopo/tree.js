@@ -150,7 +150,8 @@ function dblClickExpand(treeId, treeNode) {
 
 function chooseDelete(){
 	var testNum0 = (zTree.getSelectedNodes()[0].tId=="treeDemo_1");//根节点
-	if(testNum0){
+	var testNum1 = (zTree.getSelectedNodes()[0].parentTId=="treeDemo_1");//第二级节点
+	if(testNum0 || testNum1){
 		$('#noDelete').modal();
 	}else{
 		$('#confirmDelete').modal();
