@@ -82,22 +82,24 @@ zNodes[0].children.splice(6,1);
 var excelData = zNodes[0];
 
 var global_wb;
-function process_wb(wb) {
+function process_wb(wb) {//数据转换
     global_wb = wb;
     var output = to_csv(wb);
     excelData = output.split("\n");
-    //将表格中获取的数据发送到前台界面
-    
+	//将表格中获取的数据发送到前台界面
     excelData = init(excelData);
-    fishBrain.text = excelData.name;
-    fishBrain.setSize(fishBrain.text.split('').length*20, 60);// 尺寸
-    //将导入的表格数据在左侧显示出来
     excelData['open'] = true;
 	zNodes =[excelData];
 	zNodes[0].children.splice(6,1);
-	
 	$.fn.zTree.init($("#treeDemo"), setting, zNodes);
-	
+}
+
+/*
+ * 绘制鱼骨图
+ */
+function drawFishBone(){
+	fishBrain.text = excelData.name;
+    fishBrain.setSize(fishBrain.text.split('').length*20, 60);// 尺寸
 	var nodeArr = [bigMeasure, bigMethod, bigMachine, bigEnvironment, bigMaterial, bigMan];
 	for(var i=0;i<nodeArr.length;i++){
 		excelData.children.forEach(function(value,index,array){
@@ -108,10 +110,10 @@ function process_wb(wb) {
 			}
 		},this)
 	}
-	
 	selfAdapt();//根节点补偿
 	setCenter();//绘制完成之后居中
 }
+
 /*
  * 更新根节点位置
  */
@@ -480,6 +482,23 @@ function lineFeed(string){
  */
 
 function handleFile(e) {
+	
+	$("#canvas").remove();//删除当前画布
+	   $("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
+		//加载鱼骨图基础骨架
+		var head = $("body").remove("script[role='reload']");  
+	   $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
+	   $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/canvasAdapt.js", type: 'text/javascript' }).appendTo("body");
+	  zNodes =init(baseData);
+	  fishBrain.text = zNodes.name;
+	  zNodes['open'] = true;
+	  zNodes =[zNodes];
+	  zNodes[0].children.splice(6,1);
+	  excelData = zNodes[0];
+	  $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+	  getId();// 重新获得ID
+	  setCenter();//绘制完成之后居中
+	  
     rABS = true;
     use_worker = true;
     var files = e.target.files;

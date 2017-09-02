@@ -63,32 +63,32 @@
             <div class="main-content" >
                 <div class="breadcrumbs" id="breadcrumbs" style="border-bottom: 0px;">
                         <div>
-						     <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;;margin-left: 5px;" onclick="$('#redraw').modal()">
-						        <i class="glyphicon glyphicon-edit"> 重绘</i>
-						    </button>
-						    
-						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#renew').modal()">
-						        <i class="glyphicon glyphicon-new-window"> 新建</i>
-						    </button>
-						    
-                            <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="downloadFile()">
-						        <i class="glyphicon glyphicon-download-alt"> 下载模板</i>
+                            <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;margin-left: 5px;" onclick="downloadFile()">
+						        <i class="glyphicon glyphicon-download-alt">下载模板</i>
 						    </button>
 						    
 						    <button type="submit" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#myModal1').modal()">
-						        <i class="glyphicon glyphicon-upload"> 导入</i>
+						        <i class="glyphicon glyphicon-upload">导入</i>
+						    </button>
+						    
+						     <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#redraw').modal()">
+						        <i class="glyphicon glyphicon-edit">绘制</i>
+						    </button>
+						    
+						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#renew').modal()">
+						        <i class="glyphicon glyphicon-new-window">新建</i>
 						    </button>
 						    
 						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="setCenter()">
-						        <i class="glyphicon glyphicon-align-center"> 居中</i>
+						        <i class="glyphicon glyphicon-align-center">居中</i>
 						    </button>
 						    
 						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="convertCanvasToImage()">
-						        <i class="	glyphicon glyphicon-saved"> 保存</i>
+						        <i class="	glyphicon glyphicon-saved">保存</i>
 						    </button>
 						    
 						    <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;" onclick="$('#myModal').modal()">
-						        <i class="glyphicon glyphicon-info-sign"> 帮助</i>
+						        <i class="glyphicon glyphicon-info-sign">帮助</i>
 						    </button>
                       </div>
                 </div>
@@ -109,9 +109,9 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 	       <div class="modal-header" >
-               <h4 class="modal-title" >
+               <h2 class="modal-title" >
 					鱼骨图App使用说明:
-				</h4>
+				</h2>
 		  </div>
 		  <div class="modal-body">
 				本WebApp提供两种绘制鱼骨图方法：<br/>
@@ -120,14 +120,16 @@
 				&nbsp;&nbsp;&nbsp;2)填写待解决问题以及问题原因；<br/>
 				&nbsp;&nbsp;&nbsp;<img src="./template/img/reasonAnasis.png" width="400px" height="200px"> <br/> 
 				&nbsp;&nbsp;&nbsp;3)删除模板中多余数据；<br/>
-				&nbsp;&nbsp;&nbsp;4)通过右键可以在侧边栏上数据，点击绘制鱼骨图，即可得到修改后的鱼骨图；<br/>
+				&nbsp;&nbsp;&nbsp;4)点击绘制按钮，绘制鱼骨图；<br/>
+				&nbsp;&nbsp;&nbsp;5)选中节点，点击上方的功能按钮，可是实现对内容的修改，点击绘制可得到修改后的鱼骨图；<br/>
+				&nbsp;&nbsp;&nbsp;6)点击居中，并保存图片；<br/>
 				2、在侧边栏交互编辑<br/>
 				&nbsp;&nbsp;&nbsp;1)编辑待解决问题；<br/>
 				&nbsp;&nbsp;&nbsp;2)分别添加每一级的子节点，并编辑；<br/>
 				&nbsp;&nbsp;&nbsp;3)点击绘制鱼骨图即可生成对应的鱼骨图；<br/>
 				&nbsp;&nbsp;&nbsp;4)点击居中，并保存图片；<br/>
 				3、注意事项<br/>
-				&nbsp;&nbsp;&nbsp;1)使用模板添加问题原因时，因保持问题之间的层次结构；<br/>
+				&nbsp;&nbsp;&nbsp;1)使用模板添加问题原因时，必须保持问题之间的层次结构（树状结构）；<br/>
 				&nbsp;&nbsp;&nbsp;2)模板中每一行只能有一个数据；<br/>
 				&nbsp;&nbsp;&nbsp;3)保存图片时，应先居中；<br/>
 		  </div>
@@ -208,8 +210,8 @@
 		<div class="modal-content">
 		   <div class="modal-header" style="text-align:center;padding-top: 50px;padding-bottom: 50px;padding-left: 0px;padding-right: 0px;">
 	        <h4 class="modal-title" id="myModalLabel">
-	                       如果重绘将无法恢复原来的鱼骨图数据。</br>
-	                       确认重绘请点击“确认”按钮，否则点击“取消”按钮。
+	                       如果绘制将无法恢复原来的鱼骨图数据。</br>
+	                       确认绘制请点击“确认”按钮，否则点击“取消”按钮。
 	        </h4>
 	      </div>
 	      <div class="modal-footer">

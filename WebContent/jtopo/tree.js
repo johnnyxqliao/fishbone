@@ -210,18 +210,10 @@ function chooseDelete(){
 function redraw(){
          $("#canvas").remove();//删除当前画布
 	$("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
-	//画布自适应屏幕
-	$(window).resize(resizeCanvas);
-	function resizeCanvas() {
-	var width = $(window).get(0).innerWidth;
-	var height = $(window).get(0).innerHeight;
-	$("#canvas").attr("width", width-190);
-	$("#canvas").attr("height", height);
-	}
-	resizeCanvas();
 	//加载鱼骨图基础骨架
 	var head = $("body").remove("script[role='reload']");  
-    $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
+    $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body");
+    $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/canvasAdapt.js", type: 'text/javascript' }).appendTo("body");
     //根据当前的数据重绘鱼骨图
     fishBrain.text = excelData.name;
     fishBrain.setSize(fishBrain.text.split('').length*20, 60);// 尺寸
@@ -237,29 +229,22 @@ function redraw(){
 	}
 	selfAdapt();//根节点补偿
 	setCenter();//绘制完成之后居中
+	
+	 $("#xlf").remove();
+	 $("#chooseFile").append("<input type='file' name='xlfile' id='xlf'/>");//新建选择文件按钮
+	 getId();
 }
 
 /*
  * 新建鱼骨图
  */
 function newFishbone(){
-        $("#canvas").remove();//删除当前画布
-	$("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
-	//画布自适应屏幕
-	$(window).resize(resizeCanvas);
-	function resizeCanvas() {
-	var width = $(window).get(0).innerWidth;
-	var height = $(window).get(0).innerHeight;
-	$("#canvas").attr("width", width-190);
-	$("#canvas").attr("height", height);
-	}
-	resizeCanvas();
+   $("#canvas").remove();//删除当前画布
+   $("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
 	//加载鱼骨图基础骨架
 	var head = $("body").remove("script[role='reload']");  
    $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
-
-  baseData = ["SHEET: Sheet1","","待解决问题,",",人员"
-       ,",机器",",材料",",方法",",环境",",测量",""];
+   $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/canvasAdapt.js", type: 'text/javascript' }).appendTo("body");
   zNodes =init(baseData);
   fishBrain.text = zNodes.name;
   zNodes['open'] = true;
@@ -270,4 +255,5 @@ function newFishbone(){
   $("#xlf").remove();
   $("#chooseFile").append("<input type='file' name='xlfile' id='xlf'/>");//新建画布
   getId();// 重新获得ID
+  setCenter();//绘制完成之后居中
 }
