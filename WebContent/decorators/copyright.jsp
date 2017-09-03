@@ -46,7 +46,7 @@
 
 		
 		
-			<footer class="container-fluid foot-wrap">
+			<footer class="container-fluid foot-wrap" style="padding-right: 0px;padding-left: 0px;">
 				
            					<div align="center" style="position:fixed;bottom:0;left: 0;right: 0;margin:0 auto;float:top; " >
            							<ul>

@@ -1451,8 +1451,9 @@ function(a) {
             }
         }),
         this.zoom = function(a, b) {
-            null != a && 0 != a && (this.scaleX = a),
-            null != b && 0 != b && (this.scaleY = b)
+        	null != a && 0 != a && (this.scaleX = a),
+            null != b && 0 != b && (this.scaleY = b),
+            this.zoomIn(0.95)
         }
         ,
         this.zoomOut = function(a) {

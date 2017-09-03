@@ -18,7 +18,7 @@ fishBrain.setLocation(800, 320);// 位置
 fishBrain.setSize(180, 60);// 尺寸
 fishBrain.borderWidth = 2;// 边框的宽度
 fishBrain.fillColor = '210,105,30';//边框颜色
- fishBrain.dragable = false;
+fishBrain.dragable = false;
 fishBrain.layout = {type: 'tree'}
 scene.add(fishBrain);
 var aa = fishBrain.getBound();

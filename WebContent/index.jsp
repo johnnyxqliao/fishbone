@@ -61,7 +61,7 @@
 						    
      </div>
             <div class="main-content" >
-                <div class="breadcrumbs" id="breadcrumbs" style="border-bottom: 0px;">
+                <div class="breadcrumbs" id="breadcrumbs" style="padding-right: 0px;border-bottom-width: 0px;">
                         <div>
                             <button type="button" class="btn btn-primary" style="float:left;padding-top: 0px;padding-bottom: 0px;padding-right: 0px;margin-top: 10px;padding-left: 0px;margin-right: 5px;margin-left: 5px;" onclick="downloadFile()">
 						        <i class="glyphicon glyphicon-download-alt">下载模板</i>
@@ -93,7 +93,7 @@
                       </div>
                 </div>
                     <div id="canvasDiv">
-                          <canvas id="canvas" width=1000 height=600></canvas>
+                          <canvas id="canvas" width=500 height=500></canvas>
                     </div>
                 </div>
 
@@ -267,6 +267,7 @@
 		</div>
 	</div>
 </div>
+    <script type="text/javascript" src="./jtopo/canvasAdapt.js"></script>
     <script type="text/javascript" src="js/featureButton.js"></script>
     <script type="text/javascript" src="js/tree/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="js/tree/jquery.ztree.exedit.js"></script>
@@ -274,6 +275,6 @@
     <script type="text/javascript" src="jtopo/drawing.js"></script>    
     <script type="text/javascript" src="jtopo/tree.js"></script>  
     <script type="text/javascript" src="./jtopo/popups.js"></script>
-    <script type="text/javascript" src="./jtopo/canvasAdapt.js"></script>		
+    		
 </body>
 </html>

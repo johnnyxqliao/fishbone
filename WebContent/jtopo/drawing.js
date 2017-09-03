@@ -168,7 +168,7 @@ function cal(jsonNode, direction, rootNode){
  */
 var textHoriNode = 15;
 function drawHori(attriNode, curNode, direction, index){
-	var textLen = attriNode.text.split('').length;//计算文本补偿
+	var textLen = equalLen(attriNode.text);//计算文本补偿
     textOffset =0;
     if (textLen>5) var textOffset = textLen*10;
     var tarNodex = attriNode.getBound().left;
@@ -217,7 +217,7 @@ function drawHori(attriNode, curNode, direction, index){
  */
 var textVerNode = 15;
 function drawVer(parentNode, curNode, direction, index){
-	var textLen = parentNode.text.split('').length;//计算文本长度对节点位置的补偿
+	var textLen = equalLen(parentNode.text);//计算文本长度对节点位置的补偿
 	var textOffset = 0;
 	if(textLen>5) textOffset = (textLen-5)*20;
 	
@@ -287,8 +287,8 @@ function drawVer(parentNode, curNode, direction, index){
  */
 function drawHoriLine(rootNode, subNode, index){
 	
-	var rootTextLen = rootNode.text.split('').length;
-	var subTextLen = subNode.text.split('').length;
+	var rootTextLen = equalLen(rootNode.text);
+	var subTextLen = equalLen(subNode.text);
 	subTextLen = (subTextLen>5?subTextLen:0);
 	rootTextLen = (rootTextLen>5?rootTextLen:0);
 	if(rootNode.getBound().top<350){
@@ -317,25 +317,25 @@ function drawHoriLine(rootNode, subNode, index){
  * 绘制倾斜节点连线
  */
 function drawVerLine(rootNode, subNode, index){
-	var rootTextLen = rootNode.text.split('').length;
-	var subTextLen = subNode.text.split('').length;
+	var rootTextLen = equalLen(rootNode.text);
+	var subTextLen = equalLen(subNode.text);
 	subTextLen = (subTextLen>5?subTextLen:0);
 	rootTextLen = (rootTextLen>5?rootTextLen:0);
 	if(rootNode.getBound().top<350){//鱼骨上方
 		if(index==0){//首次添加斜节点
 		var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [20, -12.5, -40, -12.5,
-			                                                               -16.8-subTextLen*10*0.34, -10-subTextLen*10*0.94, 0, 30]);
+			                                                               -16.8-subTextLen*12*0.34, -10-subTextLen*12*0.94, 0, 30]);
 	}else{//正常添加斜节点
 		var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [0, 30, 0, 30, 
-			                                                               -23-subTextLen*10*0.34, -25-subTextLen*10*0.94, 0, 30]);
+			                                                               -23-subTextLen*12*0.34, -25-subTextLen*12*0.94, 0, 30]);
 	}
 	}else{//鱼骨下方
 		if(index==0){//首次添加斜节点
 			var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [20, 12.5, -45, 12.5,
-				                                                             -20-subTextLen*10*0.34, 16.7+subTextLen*10*0.94,-5, -25]);
+				                                                             -20-subTextLen*12*0.34, 16.7+subTextLen*12*0.94,-5, -25]);
 		}else{//正常添加斜节点
 			var slashLink = new JTopo.FlexionalLink(rootNode, subNode, null, [-23, 25, -5, -25, 
-				                                                               -23-subTextLen*10*0.34, 25+subTextLen*10*0.94, -5, -25]);
+				                                                               -23-subTextLen*12*0.34, 25+subTextLen*12*0.94, -5, -25]);
 		}
 	}
 	slashLink.direction = 'horizontal' || 'horizontal';
@@ -430,6 +430,21 @@ function mainBoneAdaptSelf(childrenArr, upperBone){
         }
 }
 
+/*
+ * 计算字符串等价长度
+ */
+function equalLen(str){
+	var euqalLen=0;
+	for(var len=0;len<str.length;len++){
+		if(str.charCodeAt(len) > 255){
+			euqalLen += 1;
+		}else{
+			euqalLen += 0.5;
+		}
+	}
+	return euqalLen;
+}
+
 /**
  * 自适应布局函数
  */
@@ -458,24 +473,6 @@ function excelNode(x, y, text, id){
     return excelNode;
 }
 
-/**
- * 超过四个节点换行函数
- */
-function lineFeed(string){
-    var lineFeed = string.split("");
-    var length = lineFeed.length;
-    var String = '';
-    var count = 0;
-    for (var i=0; i<length; i++){
-        count +=1;
-        String +=lineFeed[i];
-        if(count%5==0){
-            String +='\n';
-        }
-    }
-    console.log(String);
-    return String;
-}
 
 /**
  *读取excel内容函数的主函数入口
@@ -487,8 +484,9 @@ function handleFile(e) {
 	   $("#canvasDiv").append("<canvas id='canvas' width=1000 height=600></canvas>");//新建画布
 		//加载鱼骨图基础骨架
 		var head = $("body").remove("script[role='reload']");  
+		$("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/canvasAdapt.js", type: 'text/javascript' }).appendTo("body");
 	   $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/bone.js", type: 'text/javascript' }).appendTo("body"); 
-	   $("<scri" + "pt>" + "</scr" + "ipt>").attr({ role: 'reload', src: "jtopo/canvasAdapt.js", type: 'text/javascript' }).appendTo("body");
+	   
 	  zNodes =init(baseData);
 	  fishBrain.text = zNodes.name;
 	  zNodes['open'] = true;
