@@ -226,8 +226,56 @@
 		</div>
 		<!-- /.container -->
 	</div>
-	
-	
+
+	<div class="breadcrumbs" id="breadcrumbs">
+		<script type="text/javascript">
+			try {
+				ace.settings.check('breadcrumbs', 'fixed')
+			} catch (e) {
+			}
+		</script>
+
+		<ul class="breadcrumb">
+			<li><i class="icon-home home-icon"></i> <a
+				href="http://innovation.xjtu.edu.cn/InnovationToolsPlatform/appList">创新方法工具平台</a>
+			</li>
+
+			<li><a href="#">鱼骨图</a></li>
+
+		</ul>
+		<!-- .breadcrumb -->
+
+		<div class="nav-search" id="nav-search">
+			<span id="greeting"> <!-- 占用搜索框进行页面提示 --> <script
+					language="JavaScript">
+				var mess1 = "";
+				var mess2 = "欢迎光临！"
+				day = new Date()
+				hr = day.getHours()
+				if ((hr >= 0) && (hr <= 4))
+					mess1 = "深夜了，注意身体哦... "
+				if ((hr >= 4) && (hr < 7))
+					mess1 = "清晨好，起得真早啊... "
+				if ((hr >= 7) && (hr < 12))
+					mess1 = "早上好，"
+				if ((hr >= 12) && (hr <= 13))
+					mess1 = "午饭时间喔，"
+				if ((hr >= 13) && (hr <= 17))
+					mess1 = "外面的太阳猛烈吗? "
+				if ((hr >= 17) && (hr <= 18))
+					mess1 = "进入傍晚了，"
+				if ((hr >= 18) && (hr <= 19))
+					mess1 = "我大概在吃晚饭了，"
+				if ((hr >= 19) && (hr <= 23))
+					mess1 = "又到晚上黄金上网时间了，"
+				document.write(mess1)
+				document.write(mess2)
+			</script>
+			</span>
+		</div>
+		<!-- #nav-search -->
+	</div>
+
 	<div class="sidebar" id="sidebar"
 		style="margin-top: 0px; width: 190px; background-color: #FFFFFF ;">
 		<button type="button" class="btn btn-primary"
