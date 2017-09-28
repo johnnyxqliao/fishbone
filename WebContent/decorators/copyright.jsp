@@ -10,71 +10,30 @@
 		
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		
-		<!-- 引入css -->
-		<link href="css/phoneresponsable.css" rel="stylesheet" media="screen and (max-width: 480px)" />
-		
-		<!-- 引入js -->
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.dataTables.min.js"></script>
-		
 		<title>Footer</title><!-- 用户界面标题 -->
-		 
-		
-
-		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
-		<link rel="stylesheet" href="assets/css/ace-fonts.css" />
-		<link rel="stylesheet" href="assets/css/ace.min.css" id="main-ace-style" />
-		<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
-		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
-		<script src="assets/js/ace-extra.min.js"></script>
-
-		
-		<link rel="stylesheet" href="decorators/decorators.css" />
-		
-		
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<!-- <script src="js/common/welcome.js"></script> --></head>
+</head>
+<body class="no-skin">
+	<div class="main-container" id="main-container">
+		<script type="text/javascript">
+			try {
+				ace.settings.check('main-container', 'fixed')
+			} catch (e) {
+			}
+		</script>
+		<footer class="container-fluid foot-wrap">
+		<div align="center"
+			style="position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;background-color: #FFFFFF ;border-top:1px solid #CCC">
+			<ul>
+				<span class="bigger-120"> <span class="blue bolder"><a
+						href="http://cadcam.xjtu.edu.cn/">西安交通大学CAD/CAM研究室 </a></span>
+				</span>
+				<span> Copyright&copy; 2017 </span>
 
-	<body class="no-skin">
-		<div class="main-container" id="main-container">
-			<script type="text/javascript">
-				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
-			</script>
-
-		
-		
-			<footer class="container-fluid foot-wrap" style="padding-right: 0px;padding-left: 0px;">
-				
-           					<div align="center" style="position:fixed;bottom:0;left: 0;right: 0;margin:0 auto;float:top; " >
-           							<ul>
-           								<big>
-           								
-										<span class="bigger-120">	
-										<span class="blue bolder" ><a href="http://innovation.xjtu.edu.cn/InnovationToolsPlatform/index">创新方法工具平台</a></span>								
-										</span>
-										<span>
-											Copyright&copy; 2017
-										<span class="bigger-120 blue bolder">
-											<a  href="http://cadcam.xjtu.edu.cn/">西安交通大学CAD/CAM研究室 </a>
-										</span>
-										</span>									
-										<p align="center" style="margin-top: 00px;color:#878B91;">
-            								备案号：某ICP备xxxxxxxxx号-x
-        								</p>
-        								</big>
-									</ul>
-           						</div> 
-		
-		</footer><!-- /.main-container -->
-
-		<!-- basic scripts -->
-
-		<!--[if !IE]> -->
-		
-		
-		
-	</body>
+			</ul>
+		</div>
+		</footer>
+	</div>
+</body>
 </html>

@@ -39,7 +39,7 @@
 	</head>
 
 	<body>
-	<jsp:include page="/decorators/banner.jsp"></jsp:include>
+	<jsp:include page="/decorators/banner2.jsp"></jsp:include>
 	<jsp:include page="/decorators/copyright.jsp"></jsp:include>
 
                     <div id="canvasDiv">
