@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- Activates scanning of @Service -->
+	<context:component-scan base-package="xjtu.service" />
+	<!-- Activates scanning of @Repository -->
+	<context:component-scan base-package="xjtu.dao" />
+
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+	<!-- dataSource -->
+	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/TestDB"></property>
+	</bean> -->
+
+    <!--数据库1的配置-->
+	<bean id="mysql1DataSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="${jdbc1.url}"/>
+        <property name="user" value="${jdbc1.username}"/>
+        <property name="password" value="${jdbc1.password}"/>
+
+        <property name="maxPoolSize" value="10" />
+        <property name="minPoolSize" value="2" />
+        <property name="maxIdleTime" value="1800" />
+        <property name="maxStatements" value="0" />
+        <property name="initialPoolSize" value="2" />
+        <property name="idleConnectionTestPeriod" value="1800" />
+
+        <property name="testConnectionOnCheckin" value="true"/>
+        <property name="testConnectionOnCheckout" value="true"/>
+        <property name="preferredTestQuery" value="SELECT 1"/>
+
+    </bean>
+	<!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="mysql1DataSource"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+
+                <!--加上这一句后Coudn't Open Connection-->
+                <!--<prop key="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider</prop>-->
+
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- 解决 Spring-Security: No Session found for current thread 
+				<prop key="current_session_context_class">thread</prop>
+				-->
+				<!-- 插入数据后select lastInsert() -->
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+                <!--连接池的最小连接数-->
+                <prop key= "hibernate.c3p0.min_size" >2</prop>
+                <!--最大连接数-->
+                <prop key= "hibernate.c3p0.max_size" >10</prop>
+                <!--连接超时时间-->
+                <prop key= "hibernate.c3p0.timeout" >1800</prop>
+                <!--statemnets缓存大小-->
+                <prop key= "hibernate.c3p0.max_statements" > 100 </prop>
+                <!--每隔多少秒检测连接是否可正常使用  -->
+                <prop key= "hibernate.c3p0.idle_test_period" >120</prop>
+                <!--当池中的连接耗尽的时候，一次性增加的连接数量,默认为3-->
+                <prop key= "hibernate.c3p0.acquire_increment" >2</prop >
+                <prop key= "hibernate.c3p0.validate" >true</prop >
+        </props>
+		</property>
+		<property name="packagesToScan" value="xjtu.model" />
+	</bean>
+
+    <!--暂时不用-->
+    <!--&lt;!&ndash;数据库2的配置&ndash;&gt;-->
+    <!--<bean id="mysql2DataSource" class="org.apache.commons.dbcp.BasicDataSource">-->
+        <!--<property name="driverClassName" value="${jdbc2.driverClassName}"/>-->
+        <!--<property name="url" value="${jdbc2.url}"/>-->
+        <!--<property name="username" value="${jdbc2.username}"/>-->
+        <!--<property name="password" value="${jdbc2.password}"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash; Hibernate SessionFactory &ndash;&gt;-->
+    <!--<bean id="mysql2SessionFactory"-->
+          <!--class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">-->
+        <!--<property name="dataSource" ref="mysql2DataSource"></property>-->
+        <!--<property name="hibernateProperties">-->
+            <!--<props>-->
+                <!--<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>-->
+                <!--&lt;!&ndash;-->
+                <!--<prop key="hibernate.show_sql">true</prop>-->
+                 <!--&ndash;&gt;-->
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
+                <!--&lt;!&ndash;-->
+                <!--<prop key="hibernate.hbm2ddl.import_files">-->
+                    <!--/sql/myUser.sql,-->
+                    <!--/sql/expoorder.sql,-->
+                    <!--/sql/product.sql-->
+                <!--</prop>-->
+                 <!--&ndash;&gt;-->
+                <!--&lt;!&ndash; 解决 Spring-Security: No Session found for current thread-->
+                <!--<prop key="current_session_context_class">thread</prop>-->
+                <!--&ndash;&gt;-->
+                <!--&lt;!&ndash; 插入数据后select lastInsert() &ndash;&gt;-->
+                <!--<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+        <!--<property name="packagesToScan" value="xjtu.model" />-->
+    <!--</bean>-->
+
+    <!--TransactionManager的配置，多个数据库的TransactionManager实现待考虑-->
+	<!-- Enable @Transactional support -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+          p:sessionFactory-ref="sessionFactory">
+    </bean>
+
+	<tx:annotation-driven />
+</beans>
